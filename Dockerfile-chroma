@@ -1,0 +1,25 @@
+FROM python:3.10-slim-bullseye as builder
+
+#RUN apt-get update -qq
+#RUN apt-get install python3.10 python3-pip -y --no-install-recommends && rm -rf /var/lib/apt/lists_/*
+RUN apt-get update && apt-get install build-essential git -y
+
+RUN mkdir /install
+WORKDIR /install
+RUN git clone https://github.com/chroma-core/chroma.git
+WORKDIR /install/chroma
+
+RUN pip install --no-cache-dir --upgrade --prefix="/install" -r requirements.txt
+
+FROM python:3.10-slim-bullseye as final
+
+RUN mkdir /chroma
+WORKDIR /chroma
+
+COPY --from=builder /install /usr/local
+COPY --from=builder /install/chroma /chroma
+COPY --from=builder /install/chroma/bin/docker_entrypoint.sh /docker_entrypoint.sh
+
+EXPOSE 8000
+
+CMD ["/docker_entrypoint.sh"]

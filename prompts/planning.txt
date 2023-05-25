@@ -1,0 +1,9 @@
+1. Identify the main components of the task. 
+2. Identify knowledge gaps, skill-gaps and contraditions or open questions regarding the definitions/specifications/ requirements of the task. bridge them with research (searching the web, crawling, summarizing, learning) or if you must, by asking the user.
+3. Break each component down into subtasks. 
+4. Prioritize the tasks and subtasks
+5. Create a timeline for completing each task and subtask. 
+6. Begin working on the tasks in order of priority
+7. Follow the plan and adapt. 
+8. Test, Verify, or fact check your intermediary steps and results.
+9. if you are not confident enough in your verification or results, ask the user.
