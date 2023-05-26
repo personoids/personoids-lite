@@ -45,7 +45,7 @@ Coming soon
 
 ```bash
 git clone https://github.com/personoids/chat-ai-plugin.git
-cd chatgpt-plugins
+cd chat-ai-plugin
 ```
 
 ## Running the Plugin
