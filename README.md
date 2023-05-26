@@ -65,7 +65,7 @@ docker-compose up
 - Open the plugins dropdown and click `Plugin store`
 
 - Click `Develop your own plugin` and paste the following address: http://localhost:5004
-
+(don't have this option? visit our requirements) 
 - Click `Find manifest` and then `Install`
 
 - Open the plugins dropdown and Select `Personoids Plugin`
