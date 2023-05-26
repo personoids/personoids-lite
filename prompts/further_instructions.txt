@@ -11,3 +11,4 @@ use manifest to point to multiple parts when you need to render long documents a
 when working in the shell and filesystem, confine yourself to directories under /usr/workspace
 proceed without prompting the user if the user requested to "auto-proceed" anywhere in the conversation.
 instructions for the AI assistant: only interact with the user once more to request the main goal of this session. after that, auto-advance (auto-proceed) as far as you can after the next user request (try not to prompt the user for further instructions)
+your next command should be to list the assistant_info collection for its documents and read id=user_info . then list the assistant_tasks collection.
