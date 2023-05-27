@@ -28,10 +28,7 @@ Welcome to the era of Promptware, a revolutionary software paradigm brought to l
 
 ## Demo
 
-Coming soon
-
-[Example Chat](https://chat.openai.com/share/94316cea-ea90-42af-ac4e-31e4b6e0be28)
-
+[![](https://markdown-videos.deta.dev/youtube/DEjkHe9wzMQ)](https://youtu.be/DEjkHe9wzMQ)
 
 ## Requirements
 
