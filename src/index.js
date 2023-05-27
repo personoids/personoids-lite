@@ -1,8 +1,8 @@
 import path from 'path';
 import { createServer } from "@personoids/ai-plugin-router";
-import { PersonoidLightKernel } from "./PersonoidLightKernel.js";
+import { PersonoidLiteKernel } from "./PersonoidLiteKernel.js";
 const app = createServer({
-  "*": PersonoidLightKernel,
+  "*": PersonoidLiteKernel,
 });
 app.get("/logo.png", (req, res) => {
   const logoPath = path.resolve('./logo.png');

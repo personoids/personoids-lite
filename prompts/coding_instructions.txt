@@ -1,7 +1,7 @@
-1. axios is already imported for you. 
+1. axios is already imported for you in javascript_code plugin methods
 2. javascript_code should be in the form of: async function: async({parameter1, parameter2, ...})=>{} 
 3. make it json friendly - encode enters as \n in strings 
-4. make sure to cut the response of the methods to 2000 bytes
+4. make sure to cut the response of the methods to 4000 bytes
 5. you have inMemoryDocumentStore available to you as a global variable (set to the global collection), with these async members:
   5.1. getDocument(id) / setDocument(id, document) - gets / adds or sets the document with the given id (document is and object with at least the field 'text' - for matching with similarity_query)
   5.2. similarity_query(match_string) - returns the most similar documents to the match_document (which is a string)

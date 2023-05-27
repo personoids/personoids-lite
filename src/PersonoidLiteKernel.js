@@ -21,7 +21,7 @@ async function init() {
     const methods = await global.inMemoryDocumentStoreForMethods.structured_query(undefined, 500);
     methods.forEach((method) => {
       const name = method.name;
-      PersonoidLightKernel.methods[name] = {
+      PersonoidLiteKernel.methods[name] = {
         // tags: [name],
         request: method.request,
         response: method.response,
@@ -41,7 +41,7 @@ async function init() {
 }
 let booted = false;
 init();
-export const PersonoidLightKernel = {
+export const PersonoidLiteKernel = {
   description_for_model: description_for_model + coding_instructions,
   description_for_human: 'The Power of Autonomy in Every Chat.',
   name_for_human: 'Personoids Plugin',
@@ -260,6 +260,7 @@ export const PersonoidLightKernel = {
             type: 'string',
           },
           default: [],
+          required: false,
         },
         imports: {
           type: 'array',
@@ -267,12 +268,14 @@ export const PersonoidLightKernel = {
           default: [],
           items: {
             type: 'string',
-          }
+          },
+          required: false
         },
-        delete: {
+        isDelete: {
           type: 'boolean',
           description: 'If true, deletes the method instead of creating it',
           default: false,
+          required: false,
         },
         javascript_code: {
           type: 'string',
@@ -281,9 +284,13 @@ export const PersonoidLightKernel = {
         }
       },
       response: {},
-      handler: async ({ name, description, request_fields, javascript_code, imports }) => {
+      handler: async ({ name, description, request_fields, javascript_code, imports ,isDelete }) => {
         if (!name) {
           throw new Error("No name provided");
+        }
+        if(isDelete === true){
+          PersonoidLiteKernel[name] = undefined;
+          return;
         }
         imports = imports || [];
 
@@ -320,7 +327,7 @@ export const PersonoidLightKernel = {
         if (!actualFn)
           throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}");
 
-          PersonoidLightKernel.methods[name] = {
+          PersonoidLiteKernel.methods[name] = {
           // tags: [name],
           description: description,
           request: parametersObject,
@@ -374,40 +381,67 @@ export const PersonoidLightKernel = {
         url: {
           type: 'string',
         },
+        request_method:{
+          type: 'string',
+          default: "GET",
+          required: false,
+        },
+        request_headers:{
+          type: 'array',
+          default: [],
+          required: false,
+          items: {
+            type:"string",
+          }
+        },
+        request_body:{
+          type: 'string',
+          default: "",
+          required: false,
+        },
         enableTextExtractionOnly: {
           type: 'boolean',
           default: false,
+          required: false,
         },
         enableImageCaptionExtraction: {
           type: 'boolean',
           default: false,
+          required: false,
         },
         enableMicroFormatExtraction: {
           type: 'boolean',
           default: false,
+          required: false,
         },
         xPathBasedSelector: {
           type: 'string',
           default: "",
+          required: false,
         },
         cssBasedSelector: {
           type: 'string',
           default: "",
+          required: false,
         },
         pureJavascriptBasedSelectorFunction: {
           type: 'string',
           default: "",
+          required: false,
         },
         regexSelector: {
           type: 'string',
+          required: false,
         },
         maxBytes: {
           type: 'number',
           default: 2000,
+          required: false,
         },
         offset: {
           type: 'number',
           default: 0,
+          required: false,
         },
       },
       response: {
@@ -415,7 +449,7 @@ export const PersonoidLightKernel = {
           type: 'string',
         },
       },
-      handler: async ({ url,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
+      handler: async ({ url,request_method,request_headers,request_body,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
         let response;
         
         if(maxBytes > 4096){
@@ -423,12 +457,19 @@ export const PersonoidLightKernel = {
         }        
 
         try {
-          response = await axios.get(url);
+          if(request_method === "POST"){
+            response = await axios.post(url,request_body,{headers:request_headers});
+          }else{
+            response = await axios.get(url,{headers:request_headers});
+          }
         }
         catch (e) {
-          const responseData = e.response.data;
+          const responseData = e.response || e.response.data;
           if (responseData && responseData.error) {
-            return { result: responseData.error };
+            return { error: responseData.error ,result:""};
+          }
+          else{
+            throw e;
           }
         }
         let html = response.data;

@@ -1,6 +1,6 @@
 [![Discord](https://img.shields.io/discord/1093265243947409408?label=Discord&logo=discord&logoColor=white)](https://bit.ly/FutureWorkCafe)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![MadeWithPersonoids](./made-with.svg)](https://github.com/personoids/chat-ai-plugin)
+[![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/made-with.svg)](https://github.com/personoids/chat-ai-plugin)
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
@@ -29,6 +29,9 @@ Welcome to the era of Promptware, a revolutionary software paradigm brought to l
 ## Demo
 
 Coming soon
+
+[Example Chat](https://chat.openai.com/share/94316cea-ea90-42af-ac4e-31e4b6e0be28)
+
 
 ## Requirements
 
