@@ -6,8 +6,6 @@ import fs from 'fs';
 import { serpAPIKey, openai } from "./chromaClient.js";
 import { cleanHtml } from "./cleanHtml.js";
 import { InMemoryDocumentStores } from "./InMemoryDocumentStores.js";
-import { run } from "./chatwithplugins.js";
-import stream from 'stream';
 
 const coding_instructions = fs.readFileSync(path.resolve("prompts/coding_instructions.txt")).toString();
 const further_instructions = fs.readFileSync(path.resolve("prompts/further_instructions.txt")).toString();
@@ -23,7 +21,7 @@ async function init() {
     const methods = await global.inMemoryDocumentStoreForMethods.structured_query(undefined, 500);
     methods.forEach((method) => {
       const name = method.name;
-      PluginsPlugin.methods[name] = {
+      PersonoidLightKernel.methods[name] = {
         // tags: [name],
         request: method.request,
         response: method.response,
@@ -43,7 +41,7 @@ async function init() {
 }
 let booted = false;
 init();
-export const PluginsPlugin = {
+export const PersonoidLightKernel = {
   description_for_model: description_for_model + coding_instructions,
   description_for_human: 'The Power of Autonomy in Every Chat.',
   name_for_human: 'Personoids Plugin',
@@ -62,28 +60,6 @@ export const PluginsPlugin = {
           }
         }
     },
-    "askAssistant":{
-        method: "POST",
-        description: "This method sends a message to a sub-assistant that helps the assistant accomplish goals and execute tasks.",
-        request: {
-          message: {
-            type: 'string',
-            description: 'The message to send to the assistant',
-          },
-          reset_conversation: {
-            type: 'boolean',
-            description: 'If true, resets the conversation',
-            default: false,
-          },
-        },
-        
-        response: {
-        },
-        handler: async ({message,reset_conversation}) => {          
-            const result = await run(message,reset_conversation);
-            return {response:result};
-        }
-    },
     "fileSystemOperation": {
       tags: ['Filesystem'],
       description: 'Performs a filesystem operation',
@@ -100,16 +76,17 @@ export const PluginsPlugin = {
         data: {
           type: 'string',
           description: 'The data to write to the file',
+          required: false,
         },
         encoding: {
           type: 'string',
           description: 'The encoding to use when reading or writing the file',
-          default: 'utf8',
+          default: 'utf8',          
         },
         recursive: {
           type: 'boolean',
           description: 'If true, performs the operation recursively',
-          default: false,
+          default: false,          
         },
       },
       response: {},
@@ -225,18 +202,7 @@ export const PluginsPlugin = {
             let child;
             let ended = false;
             try{              
-              child = spawn(command, { cwd, env, shell: true }); // ,stdio: ['pipe', 'pipe', 'pipe']              
-              // new stream.Readable({ read: async function read(/** @type {number} */ size) {
-              //   if (!didread) {
-              //     didread = true;
-              //     this.push(null);
-              //     return;
-              //   }
-              //   // process is waiting for data, shouldnt happen
-              //   ended = true;
-              //   child.kill();
-              //   reject(new Error(`Blocking process is waiting for input. terminating. try using the silent or quiet flags of this shell command. stderr: ${stderr} stdout: ${stdout}`));
-              // }}).pipe(child);
+              child = spawn(command, { cwd, env, shell: true });  
             }
             catch(error){
               reject(error);
@@ -285,6 +251,7 @@ export const PluginsPlugin = {
         },
         description: {
           type: 'string',
+          required: false,
         },
         request_fields: {
           type: 'array',
@@ -297,6 +264,7 @@ export const PluginsPlugin = {
         imports: {
           type: 'array',
           description: 'The imports for this method, these will be "require()" and injected',
+          default: [],
           items: {
             type: 'string',
           }
@@ -304,10 +272,12 @@ export const PluginsPlugin = {
         delete: {
           type: 'boolean',
           description: 'If true, deletes the method instead of creating it',
+          default: false,
         },
         javascript_code: {
           type: 'string',
           description: javascript_code_description,
+          required: false
         }
       },
       response: {},
@@ -315,6 +285,8 @@ export const PluginsPlugin = {
         if (!name) {
           throw new Error("No name provided");
         }
+        imports = imports || [];
+
         // if (!description) {
         //   throw new Error("No description provided");
         // }
@@ -348,7 +320,7 @@ export const PluginsPlugin = {
         if (!actualFn)
           throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}");
 
-        PluginsPlugin.methods[name] = {
+          PersonoidLightKernel.methods[name] = {
           // tags: [name],
           description: description,
           request: parametersObject,
@@ -404,21 +376,27 @@ export const PluginsPlugin = {
         },
         enableTextExtractionOnly: {
           type: 'boolean',
+          default: false,
         },
         enableImageCaptionExtraction: {
           type: 'boolean',
+          default: false,
         },
         enableMicroFormatExtraction: {
           type: 'boolean',
+          default: false,
         },
         xPathBasedSelector: {
           type: 'string',
+          default: "",
         },
         cssBasedSelector: {
           type: 'string',
+          default: "",
         },
         pureJavascriptBasedSelectorFunction: {
           type: 'string',
+          default: "",
         },
         regexSelector: {
           type: 'string',
@@ -427,14 +405,23 @@ export const PluginsPlugin = {
           type: 'number',
           default: 2000,
         },
+        offset: {
+          type: 'number',
+          default: 0,
+        },
       },
       response: {
         result: {
           type: 'string',
         },
       },
-      handler: async ({ url, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
+      handler: async ({ url,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
         let response;
+        
+        if(maxBytes > 4096){
+          throw new Error("maxBytes must be less than 4096");
+        }        
+
         try {
           response = await axios.get(url);
         }
@@ -483,6 +470,9 @@ export const PluginsPlugin = {
         //   const imageCaptionExtractionUrl = `https://api.deepai.org/api/neuraltalk`;
         //   finalResult = "image caption extraction not implemented yet: " + imageCaptionExtractionUrl;
         // }
+        if(offset > 0){
+          finalResult = finalResult.substring(offset);
+        }
         if (finalResult.length > maxBytes)
           finalResult = finalResult.substring(0, maxBytes) + "...";
 
@@ -572,6 +562,13 @@ export const PluginsPlugin = {
         collection: {
           type: 'string',
         },
+        include_fields: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          default: ["id", "text", "name"]
+        },
       },
       response: {
         results: {
@@ -581,13 +578,22 @@ export const PluginsPlugin = {
           }
         },
       },
-      handler: async ({ collection }) => {
+      handler: async ({ collection , include_fields}) => {
+        include_fields = include_fields || ["id", "text", "name"];
         if (inMemoryDocumentStores.stores[collection] === undefined)
           return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") };
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.structured_query(undefined, 10);
-        return { results };
+
+        return { results: results.map(r => {
+          const result = {};
+          for (const field of include_fields) {
+            result[field] = r[field];
+          }
+          return result;
+        })
+         };
       }
     },
     "listCollections": {
@@ -602,7 +608,7 @@ export const PluginsPlugin = {
         },
       },
       handler: async ({ }) => {
-        const results = Object.keys(inMemoryDocumentStores.stores);
+        const results = Object.keys(inMemoryDocumentStores.stores);        
         return { results };
       }
     },
@@ -637,73 +643,6 @@ export const PluginsPlugin = {
         return { results };
       }
     },
-    "openaiCompletion": {
-      tags: ['OpenAI'],
-      request: {
-        instructions: {
-          type: 'string',
-          default: "You are a helpful AI assistant used by a different AI personal assistant"
-        },
-        prompt: {
-          type: 'string',
-        },
-        max_tokens: {
-          type: 'number',
-          default: 64,
-        },
-        temperature: {
-          type: 'number',
-          default: 0.0,
-        },
-        model: {
-          type: 'string',
-          default: "gpt-4",
-        },
-      },
-      response: {
-        result: {
-          type: 'string',
-        },
-      },
-      handler: async ({ prompt, max_tokens, temperature, model }) => {
-        const chat = [
-          { role: "system", name: "system", content: instructions },
-          { role: "user", name: "user", content: prompt },
-        ];
-        const response = await openai.createCompletion({
-          chat,
-          max_tokens,
-          temperature,
-          model,
-          top_p: 1,
-          n: 1,
-          frequency_penalty: 0.15,
-          presence_penalty: 0.2,
-        });
-        return { result: response.data.choices[0].text };
-      }
-    },
-    // "runPureJavascript": {
-    //   tags: ['Javascript'],
-    //   request: {
-    //     javascript_code: {
-    //       type: 'string',
-    //     },
-    //   },
-    //   response: {
-    //     result: {
-    //       type: 'string',
-    //     },
-    //   },
-    //   handler: async ({ javascript_code }) => {
-    //     const evalRes = await eval(javascript_code);
-    //     if(typeof evalRes === "string")
-    //       return { result: evalRes };
-    //     // if it is a function or async function, call it
-    //     const result = await evalRes();
-    //     return { result };
-    //   }
-    // },
     "bootstrapPlugin": {
       tags: ['bootstrap'],
       description: 'bootstraps the plugin. use this when the user explicitly requests it by typing "bootstrap" or "boot" or "begin" , etc',
