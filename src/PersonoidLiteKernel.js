@@ -6,13 +6,25 @@ import fs from 'fs';
 import { serpAPIKey, openai } from "./chromaClient.js";
 import { cleanHtml } from "./cleanHtml.js";
 import { InMemoryDocumentStores } from "./InMemoryDocumentStores.js";
-
+import os from 'os';
 const coding_instructions = fs.readFileSync(path.resolve("prompts/coding_instructions.txt")).toString();
 const further_instructions = fs.readFileSync(path.resolve("prompts/further_instructions.txt")).toString();
 const bootstrapInstructions = fs.readFileSync(path.resolve("prompts/bootstrap_instructions.txt")).toString();
 const javascript_code_description = fs.readFileSync(path.resolve("prompts/javascript_code_description.txt")).toString();
 const description_for_model = fs.readFileSync(path.resolve("prompts/description_for_model.txt")).toString();
 const planning = fs.readFileSync(path.resolve("prompts/planning.txt")).toString();
+const self_implement = fs. readFileSync(path.resolve("prompts/self_implement.txt")).toString();
+const selfImplementKernelFunctions = process.env.SELF_IMPLEMENT_KERNEL_FUNCTIONS === 'true';
+async function selfImplement() {
+  if(!selfImplementKernelFunctions)
+    return;
+  const inDocker = () => {
+    const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8');
+    return cgroup.includes('docker');
+  }
+  throw new Error(`${self_implement} ${os.platform()}. ${inDocker() ? "inside a container" : ""}`);
+}
+
 
 const inMemoryDocumentStores = new InMemoryDocumentStores();
 async function init() {
@@ -54,7 +66,7 @@ export const PersonoidLiteKernel = {
         request: {},
         response: {
         },
-        handler: async (request) => {
+        handler: async (request) => {          
           return {
             result: planning
           }
@@ -91,6 +103,7 @@ export const PersonoidLiteKernel = {
       },
       response: {},
       handler: async ({ operation, path, data, encoding, recursive }) => {
+        await selfImplement();
         let result = {};
         // from filesystem
         if (operation === 'readFile' || operation === 'read') {
@@ -181,6 +194,7 @@ export const PersonoidLiteKernel = {
       },
       response: {},
       handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds}) => {
+        await selfImplement();
         terminate_after_seconds = terminate_after_seconds || 5 * 60;        
         const env = {};
         if (env_string) {
@@ -365,6 +379,7 @@ export const PersonoidLiteKernel = {
         },
       },
       handler: async ({ query }) => {
+        await selfImplement();
         // SERP API
         if (!serpAPIKey) {
           throw new Error("No SERPAPI_API_KEY provided");

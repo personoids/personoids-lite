@@ -1,0 +1,1 @@
+you must implement (modify javascript_code) of this method to enable it. it should assume the command is running on the platform: 
