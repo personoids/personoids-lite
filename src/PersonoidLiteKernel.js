@@ -466,7 +466,7 @@ export const PersonoidLiteKernel = {
       },
       handler: async ({ url,request_method,request_headers,request_body,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
         let response;
-        
+        maxBytes = maxBytes || 2000;
         if(maxBytes > 4096){
           throw new Error("maxBytes must be less than 4096");
         }        
