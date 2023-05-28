@@ -100,14 +100,27 @@ export const PersonoidLiteKernel = {
           description: 'If true, performs the operation recursively',
           default: false,          
         },
+        maxBytes: {
+          type: 'number',
+          description: 'The maximum number of bytes to read',
+          default: 1000,
+        },
+        offset: {
+          type: 'number',
+          description: 'The offset to start reading from',
+          default: 0,
+        }
       },
       response: {},
-      handler: async ({ operation, path, data, encoding, recursive }) => {
+      handler: async ({ operation, path, data, encoding, recursive ,maxBytes,offset}) => {
+        maxBytes = maxBytes || 1000;
+        offset = offset || 0;
         await selfImplement();
         let result = {};
         // from filesystem
         if (operation === 'readFile' || operation === 'read') {
-          const contents = fs.readFileSync(path, encoding);
+          let contents = fs.readFileSync(path, encoding);
+          contents = contents.slice(offset, offset + maxBytes);          
           result = { contents };
         }
         else if (operation === 'writeFile' || operation === 'write') {
@@ -190,10 +203,23 @@ export const PersonoidLiteKernel = {
           type: 'number',
           default: 5 * 60,
           required: false,
+        },
+        maxBytes: {
+          type: 'number',
+          description: 'The maximum number of bytes to return from stdout and stderr',
+          default: 1000,
+        },
+        offset: {
+          type: 'number',
+          description: 'The offset to start reading from',
+          default: 0,
         }
+
       },
       response: {},
-      handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds}) => {
+      handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds,maxBytes,offset}) => {
+        maxBytes = maxBytes || 1000;
+        offset = offset || 0;
         await selfImplement();
         terminate_after_seconds = terminate_after_seconds || 5 * 60;        
         const env = {};
@@ -244,11 +270,16 @@ export const PersonoidLiteKernel = {
               console.log(`child process errored with ${error} stderr: ${stderr} stdout: ${stdout}`);
               ended = true;
               reject(error);
+              stderr = stderr.slice(offset, offset + maxBytes);
+              stdout = stdout.slice(offset, offset + maxBytes);
+
               resolve({ code:913, error, stderr, stdout });
             });
             child.on('close', (code) => {
               console.log(`child process exited with code ${code}`);
               ended = true;
+              stderr = stderr.slice(offset, offset + maxBytes);
+              stdout = stdout.slice(offset, offset + maxBytes);
               resolve({ code, stderr, stdout });
             });
           }
@@ -779,7 +810,7 @@ export const PersonoidLiteKernel = {
       }
     },
     "renderAsHtml": {
-      description: 'renders a document or a group of documents (through a manifest) as html. you can pass in a collection and id to render a single document, or a collection and a query to render multiple documents. you can also pass in a manifest to render multiple documents as a single page',
+      description: 'never call this directly. only as part of links that you provide to the user - renders a document or a group of documents (through a manifest) as html. you can pass in a collection and id to render a single document, or a collection and a query to render multiple documents. you can also pass in a manifest to render multiple documents as a single page',
       request: {
         collection: {
           name: 'collection',
