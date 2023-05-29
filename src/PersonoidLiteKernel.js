@@ -73,11 +73,7 @@ export const PersonoidLiteKernel = {
         },
         handler: async (request) => {          
           return {
-            result: planning,
-            from:{
-              name: "Planner",
-              agentAvatarUrl: "http://35.188.178.220/avatar/verifier",
-            }
+            result: planning
           }
         }
     },
@@ -201,6 +197,7 @@ export const PersonoidLiteKernel = {
         },
         env_string: {
           type: 'string',
+          description: 'A string of environment variables to set, separated by newlines. For example: VAR1=VALUE1\nVAR2=VALUE2',
           default: '',
           required: false,
         },
@@ -231,7 +228,7 @@ export const PersonoidLiteKernel = {
         offset = offset || 0;
         await selfImplement();
         terminate_after_seconds = terminate_after_seconds || 5 * 60;        
-        const env = {};
+        const env = {...process.env};
         if (env_string) {
           const envs = env_string.split("\n");
           envs.forEach((env_line) => {
