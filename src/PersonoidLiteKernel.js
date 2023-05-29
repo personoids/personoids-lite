@@ -48,9 +48,11 @@ async function init() {
         },
       };
     });
+    console.log("chroma ready");
+    console.log("Personoids Lite ready and waiting on http://localhost:5004")
   }
   catch (error) {
-    console.error("chroma not ready yet", error);
+    console.error("chroma not ready yet, retrying in 5 seconds");
     setTimeout(() => {
       init();
     }, 5000);

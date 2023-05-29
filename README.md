@@ -58,7 +58,11 @@ docker-compose up
 
 ## Installation in ChatGPT
 
-- Wait until the server is up and running.
+- Wait until the server is up and running. You should see the following message:
+
+```text
+Personoids Lite ready and waiting on http://localhost:5004
+```
 
 - Open [ChatGPT with plugins](https://chat.openai.com/?model=gpt-4-plugins)
 

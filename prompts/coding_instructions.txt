@@ -1,3 +1,4 @@
+in javascript_code fields:
 1. axios is already imported for you in javascript_code plugin methods
 2. javascript_code should be in the form of: async function: async({parameter1, parameter2, ...})=>{} 
 3. make it json friendly - encode enters as \n in strings 

@@ -1,3 +1,2 @@
 A plugin that can extend itself, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize a web requests, run request using a sub-personal assistant (openai requests), even create new methods on this plugin (you can create a method before you just before you call it if there is something you can\'t already do). you must call furtherInstructions before interacting with the plugin once every session !. 
-
-in javascript_code fields:
+if you get a response that contains a "from" field from one of the functions, render it in markdown to look as a chat message arriving from that persona, with the avatar icon.

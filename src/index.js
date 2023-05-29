@@ -11,5 +11,5 @@ app.get("/logo.png", (req, res) => {
 
 const port = process.env.PORT || 5004;
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running`);
 });
