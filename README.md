@@ -20,11 +20,11 @@
 
 ## Introduction
 
-The Personoids Lite is a transformative tool that enhances ChatGPT and other LLMs-based chats, turning them into Autonomous Agents, or Personoids. These Personoids are not just chatbots; they are intelligent agents equipped with advanced capabilities such as planning, learning, and execution. They can access the web, search for information, and even remember past interactions. With the Personoids Lite, your ChatGPT becomes a powerful assistant that can independently accomplish complex tasks. Simply ask for ANY skill or feature, and the Personoids Lite will strive to integrate it immediately.
+Personoids Lite is a transformative tool that enhances ChatGPT and other LLMs-based chats, turning them into Autonomous Agents, or Personoids. These Personoids are not just chatbots; they are intelligent agents equipped with advanced capabilities such as planning, learning, and execution. They can access the web, search for information, and even remember past interactions. With Personoids Lite, your ChatGPT becomes a powerful assistant that can independently accomplish complex tasks. Simply ask for ANY skill or feature, and Personoids Lite will strive to integrate it immediately.
 
 ## Promptware: The Future of Software
 
-Welcome to the era of Promptware, a revolutionary software paradigm brought to life by Personoids. Unlike traditional software that relies on rigid programming language instructions, Promptware is built on the flexibility of natural language instructions, or prompts. This shift in approach allows for more intuitive and dynamic interactions between users and software. With Personoids, you're not just coding; you're having a conversation with your software, guiding it through tasks with the ease of natural language. This is the future of software development, and it starts with the Personoids Lite.
+Welcome to the era of Promptware, a revolutionary software paradigm brought to life by Personoids. Unlike traditional software that relies on rigid programming language instructions, Promptware is built on the flexibility of natural language instructions, or prompts. This shift in approach allows for more intuitive and dynamic interactions between users and software. With Personoids, you're not just coding; you're having a conversation with your software, guiding it through tasks with the ease of natural language. This is the future of software development, and it starts with Personoids Lite.
 
 ## Demo
 
@@ -48,7 +48,7 @@ git clone https://github.com/personoids/chat-ai-plugin.git
 cd chat-ai-plugin
 ```
 
-## Running the Personoids Lite Plugin
+## Running Personoids Lite Plugin
 
 ```bash
 export OPENAI_API_KEY=sk-your-openai-api-key
