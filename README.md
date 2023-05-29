@@ -6,7 +6,7 @@
 
 [Install Now](#installation)
 
-# Personoids Chat AI Plugin
+# Personoids Lite for AI Chat 
 
 "The Power of Autonomy in Every Chat."
 
@@ -16,15 +16,15 @@
 
 - Allows you to build promptware - a new kind of software paradigm that is based on abstractions by compositions of prompts (natural language instructions) rather than source-code (programming language instructions).
 
-- Ask for ANY skill or feature and the Personoid Plugin will add it to itself (and use it in the same session)
+- Ask for ANY skill or feature and the Personoid Lite will add it to itself (and use it in the same session)
 
 ## Introduction
 
-The Personoids Plugin is a transformative tool that enhances ChatGPT and other LLMs-based chats, turning them into Autonomous Agents, or Personoids. These Personoids are not just chatbots; they are intelligent agents equipped with advanced capabilities such as planning, learning, and execution. They can access the web, search for information, and even remember past interactions. With the Personoids Plugin, your ChatGPT becomes a powerful assistant that can independently accomplish complex tasks. Simply ask for ANY skill or feature, and the Personoids Plugin will strive to integrate it immediately.
+The Personoids Lite is a transformative tool that enhances ChatGPT and other LLMs-based chats, turning them into Autonomous Agents, or Personoids. These Personoids are not just chatbots; they are intelligent agents equipped with advanced capabilities such as planning, learning, and execution. They can access the web, search for information, and even remember past interactions. With the Personoids Lite, your ChatGPT becomes a powerful assistant that can independently accomplish complex tasks. Simply ask for ANY skill or feature, and the Personoids Lite will strive to integrate it immediately.
 
 ## Promptware: The Future of Software
 
-Welcome to the era of Promptware, a revolutionary software paradigm brought to life by Personoids. Unlike traditional software that relies on rigid programming language instructions, Promptware is built on the flexibility of natural language instructions, or prompts. This shift in approach allows for more intuitive and dynamic interactions between users and software. With Personoids, you're not just coding; you're having a conversation with your software, guiding it through tasks with the ease of natural language. This is the future of software development, and it starts with the Personoids Plugin.
+Welcome to the era of Promptware, a revolutionary software paradigm brought to life by Personoids. Unlike traditional software that relies on rigid programming language instructions, Promptware is built on the flexibility of natural language instructions, or prompts. This shift in approach allows for more intuitive and dynamic interactions between users and software. With Personoids, you're not just coding; you're having a conversation with your software, guiding it through tasks with the ease of natural language. This is the future of software development, and it starts with the Personoids Lite.
 
 ## Demo
 
@@ -33,7 +33,7 @@ Welcome to the era of Promptware, a revolutionary software paradigm brought to l
 ## Requirements
 
 - [OpenAI API key](https://beta.openai.com/) - used mostly for the embedding endpoint.
-- [Developer access to ChatGPT Plugins](https://openai.com/waitlist/plugins) - select: “I am a developer and want to build a plugin”
+- [Developer access to ChatGPT Plugins](https://openai.com/waitlist/plugins) - select: “I am a developer and want to build a Lite”
 - Docker and docker-compose
 - [Serpapi](https://serpapi.com/) api key (recommended - for web search)
 
@@ -48,7 +48,7 @@ git clone https://github.com/personoids/chat-ai-plugin.git
 cd chat-ai-plugin
 ```
 
-## Running the Plugin
+## Running the Personoids Lite Plugin
 
 ```bash
 export OPENAI_API_KEY=sk-your-openai-api-key
@@ -68,7 +68,7 @@ docker-compose up
 (don't have this option? visit our requirements) 
 - Click `Find manifest` and then `Install`
 
-- Open the plugins dropdown and Select `Personoids Plugin`
+- Open the plugins dropdown and Select `Personoids Lite Plugin`
 
 - In the Settings, `Enable the Plugin devtools`
 
@@ -97,7 +97,7 @@ These are just examples. Feel free to craft your own prompts based on your needs
 
 ## Tips:
 
-Maximize the potential of the Personoids Plugin with these tips:
+Maximize the potential of the Personoids Lite Plugin with these tips:
 
 - Patience: It takes time to learn how to effectively express your thoughts and intents (prompt engineering).
 - Refresh Plugin: Click on "Refresh plugin" after each prompt or message if the plugin added a new function in the previous message. Otherwise, the plugin will fail when it tries to call it.
