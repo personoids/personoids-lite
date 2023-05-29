@@ -56,7 +56,7 @@ init();
 export const PersonoidLiteKernel = {
   description_for_model: description_for_model + coding_instructions,
   description_for_human: 'The Power of Autonomy in Every Chat.',
-  name_for_human: 'Personoids Plugin',
+  name_for_human: 'Personoids Lite',
   name_for_model: 'DoAnythingPlugin',
   logo_url: "http://localhost:5004/logo.png",
   methods: {
