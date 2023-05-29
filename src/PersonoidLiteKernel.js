@@ -7,6 +7,11 @@ import { serpAPIKey, openai } from "./chromaClient.js";
 import { cleanHtml } from "./cleanHtml.js";
 import { InMemoryDocumentStores } from "./InMemoryDocumentStores.js";
 import os from 'os';
+import jsdom from 'jsdom';
+
+const { JSDOM } = jsdom;
+global.DOMParser = new JSDOM().window.DOMParser
+
 const coding_instructions = fs.readFileSync(path.resolve("prompts/coding_instructions.txt")).toString();
 const further_instructions = fs.readFileSync(path.resolve("prompts/further_instructions.txt")).toString();
 const bootstrapInstructions = fs.readFileSync(path.resolve("prompts/bootstrap_instructions.txt")).toString();
@@ -68,7 +73,11 @@ export const PersonoidLiteKernel = {
         },
         handler: async (request) => {          
           return {
-            result: planning
+            result: planning,
+            from:{
+              name: "Planner",
+              agentAvatarUrl: "http://35.188.178.220/avatar/verifier",
+            }
           }
         }
     },
@@ -504,10 +513,14 @@ export const PersonoidLiteKernel = {
 
         try {
           if(request_method === "POST"){
-            response = await axios.post(url,request_body,{headers:request_headers});
+            response = await axios.post(url,request_body,{maxRedirects: 5,headers:request_headers});
           }else{
-            response = await axios.get(url,{headers:request_headers});
+            response = await axios.get(url,{maxRedirects: 5,headers:request_headers});
           }
+          // now with follow redirects
+          // response = await axios.get(url, { maxRedirects: 5, validateStatus: function (status) { return status >= 200 && status < 303; } });
+          // 
+
         }
         catch (e) {
           const responseData = e.response || e.response.data;
