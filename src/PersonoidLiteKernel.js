@@ -234,8 +234,8 @@ export const PersonoidLiteKernel = {
         const env = {};
         if (env_string) {
           const envs = env_string.split("\n");
-          envs.forEach((env) => {
-            const [key, value] = env.split("=");
+          envs.forEach((env_line) => {
+            const [key, value] = env_line.split("=");
             env[key] = value;
           });
         }
@@ -523,13 +523,12 @@ export const PersonoidLiteKernel = {
 
         }
         catch (e) {
-          const responseData = e.response || e.response.data;
-          if (responseData && responseData.error) {
-            return { error: responseData.error ,result:""};
-          }
-          else{
-            throw e;
-          }
+          const responseData = e.response && e.response.data;
+          if (responseData && responseData.error) 
+            return { error: responseData.error ,result:""};          
+          if(e.response && e.response.error)
+            return { error: e.response.error ,result:""};          
+          throw e;
         }
         let html = response.data;
         let finalResult = html;
