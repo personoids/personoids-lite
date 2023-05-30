@@ -1,7 +1,7 @@
 The javascript code to run when this method is called, including the function declaration and async keyword, but replace the placeholders with your actual code. in the format of:
 global.someGlobalVariable = 'someGlobalValue';
 async ({parameter1, parameter2, importsObject})=> {
-  // actual implemention using axios, inMemoryDocumentStore, importsObject.import1 etc.
+  // actual implemention using global.axios, inMemoryDocumentStore, inMemoryDocumentStores, importsObject.twit, importsObject.fs , importsObject.puppeteer etc.
   
   CODE_HERE
 
@@ -9,3 +9,4 @@ async ({parameter1, parameter2, importsObject})=> {
   // return {result_field1: result1.substring(0, 1000), result_field2: result2.substring(0, 1000)};
   RETURN_STATEMENT_HERE
 }
+

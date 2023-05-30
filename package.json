@@ -24,6 +24,7 @@
     "microformat-node": "^2.0.1",
     "openai": "^3.2.1",
     "openapi-request-coercer": "^12.1.1",
+    "puppeteer": "^19.11.1",
     "uuid": "^9.0.0"
   },
   "type": "module"

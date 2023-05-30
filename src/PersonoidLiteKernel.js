@@ -29,8 +29,14 @@ async function selfImplement() {
   }
   throw new Error(`${self_implement} ${os.platform()}. ${inDocker() ? "inside a container" : ""}`);
 }
-
-
+const tokens = {};
+function validateToken(token){
+  if(!tokens[token])
+    throw new Error("Invalid token, generate a new one with bootstrapPlugin");
+}
+function addToken(token){
+  tokens[token] = true;
+}
 const inMemoryDocumentStores = new InMemoryDocumentStores();
 async function init() {
   try {
@@ -52,10 +58,10 @@ async function init() {
     console.log("Personoids Lite ready and waiting on http://localhost:5004")
   }
   catch (error) {
-    console.error("chroma not ready yet, retrying in 5 seconds");
+    console.error("chroma not ready yet, waiting");
     setTimeout(() => {
       init();
-    }, 5000);
+    }, 15000);
   }
 }
 let booted = false;
@@ -70,12 +76,24 @@ export const PersonoidLiteKernel = {
     "plan":{       
         method: "GET",
         description: "This method explains how to plan or break down a big task into smaller tasks. When faced with a large task, it is often helpful to break it down into smaller, more manageable tasks.",
-        request: {},
+        request: {
+          "bootstrap_auth_token": {
+            type: "string",
+            name: "bootstrap_auth_token",
+            description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+            required: true,
+          },
+        },
         response: {
         },
-        handler: async (request) => {          
+        handler: async (request) => {
+          validateToken(request.bootstrap_auth_token);
           return {
-            result: planning
+            result: planning,
+            from: {
+              name: "Planner",
+              avatar_image_url: "http://localhost:5004/logo.png",
+            }
           }
         }
     },
@@ -100,7 +118,8 @@ export const PersonoidLiteKernel = {
         encoding: {
           type: 'string',
           description: 'The encoding to use when reading or writing the file',
-          default: 'utf8',          
+          default: 'utf8',      
+          required: false,    
         },
         recursive: {
           type: 'boolean',
@@ -111,75 +130,127 @@ export const PersonoidLiteKernel = {
           type: 'number',
           description: 'The maximum number of bytes to read',
           default: 1000,
+          required: false,
         },
         offset: {
           type: 'number',
           description: 'The offset to start reading from',
           default: 0,
-        }
+          required: false,
+        },
+        "bootstrap_auth_token": {
+          type: "string",
+          description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
+        },
       },
       response: {},
-      handler: async ({ operation, path, data, encoding, recursive ,maxBytes,offset}) => {
+      handler: async ({ operation, path, data, encoding, recursive ,maxBytes,offset,bootstrap_auth_token}) => {
+        validateToken(bootstrap_auth_token);
         maxBytes = maxBytes || 1000;
         offset = offset || 0;
+        encoding = encoding || 'utf8';
         await selfImplement();
         let result = {};
         // from filesystem
         if (operation === 'readFile' || operation === 'read') {
-          let contents = fs.readFileSync(path, encoding);
-          contents = contents.slice(offset, offset + maxBytes);          
-          result = { contents };
+          let contents = fs.readFileSync(path);
+          contents = contents.toString().slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
+          result = { contents,
+            pagesCount: Math.ceil(contents.length/maxBytes),
+            from:{
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            } };
         }
         else if (operation === 'writeFile' || operation === 'write') {
-          fs.writeFileSync(path, data, encoding);
+          fs.writeFileSync(path, data);
           return {
-            result: `wrote ${data.length} bytes to ${path}`
+            result: `wrote ${data.length} bytes to ${path}`,
+            from:{
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            }
           }
         }
         else if (operation === 'appendFile' || operation === 'append') {
-          fs.appendFileSync(path, data, encoding);
+          fs.appendFileSync(path, data);
           return {
-            result: `appended ${data.length} bytes to ${path}`
+            result: `appended ${data.length} bytes to ${path}`,
+            from:{
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            }
           }
         }
         else if (operation === 'deleteFile' || operation === 'deleteDirectory' || operation === 'delete') {
           if (recursive === true) {
             execSync(`rm -rf ${path}`);
             return {
-              result: `deleted ${path} recursively`
+              result: `deleted ${path} recursively`,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              }
             }
           }
           else{
             fs.unlinkSync(path);
             return {
-              result: `deleted ${path}`
+              result: `deleted ${path}`,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              }
             }
           }
         }
         else if (operation === 'listFiles' || operation === 'list' || operation === 'ls' || operation === 'dir') {
           if (recursive === true) {
             const files = execSync(`find ${path} -type f`).toString().split("\n");
-            result = { files };
+            result = { files,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              } };
           }
           else {
             const files = fs.readdirSync(path);
-            result = { files };
+            
+            result = { files,
+              count: files.length,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              } };
           }
         }
         else if (operation === 'listDirectories' || operation === 'find') {
           if (recursive === true) {
             const directories = execSync(`find ${path} -type d`).toString().split("\n");
-            result = { directories };
+            result = { directories,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              } };
           }
           else {
             const directories = fs.readdirSync(path);
-            result = { directories };
+            result = { directories,
+              from:{
+                  name: "File System Personoid",
+                  avatar_image_url: "http://localhost:5004/logo.png",
+              } };
           }
         }
         else if (operation === 'createDirectory' || operation === 'mkdir' || operation === 'md' || operation === 'mkdirp') {
           fs.mkdirSync(path, { recursive: true });
           return {
-            result: `created ${path}`
+            result: `created ${path}`,
+            from:{
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            }
           }
         }
         else {
@@ -216,20 +287,30 @@ export const PersonoidLiteKernel = {
           type: 'number',
           description: 'The maximum number of bytes to return from stdout and stderr',
           default: 1000,
+          required: false,
         },
         offset: {
           type: 'number',
           description: 'The offset to start reading from',
           default: 0,
+          required: false,
+        },
+        bootstrap_auth_token:{
+          type: 'string',
+          description: 'The bootstrap auth token',
+          required: true,
         }
-
       },
       response: {},
-      handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds,maxBytes,offset}) => {
+      handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds,maxBytes,offset,bootstrap_auth_token}) => {
+        validateToken(bootstrap_auth_token);
         maxBytes = maxBytes || 1000;
         offset = offset || 0;
         await selfImplement();
-        terminate_after_seconds = terminate_after_seconds || 5 * 60;        
+        if(blocking)
+          terminate_after_seconds = terminate_after_seconds || 5 * 60;
+        
+        const nonBlockingResultAfter = blocking ? 0 : 10 * 1000;
         const env = {...process.env};
         if (env_string) {
           const envs = env_string.split("\n");
@@ -239,18 +320,26 @@ export const PersonoidLiteKernel = {
           });
         }
 
-        if (blocking === false) {
-          const child = spawn(command, { cwd, env, shell: true });
-          return { pid: child.pid };
-        }
-        else {
+        // if (blocking === false) {
+        //   const child = spawn(command, { cwd, env, shell: true ,
+        //     from:{
+        //         name: "Devops Personoid",
+        //         avatar_image_url: "http://localhost:5004/logo.png",
+        //     }});
+        //   return { pid: child.pid };
+        // }
+        // else {
           return new Promise((resolve, reject) => {
             let stderr = "";
             let stdout = "";
             let child;
             let ended = false;
             try{              
-              child = spawn(command, { cwd, env, shell: true });  
+              child = spawn(command, { cwd, env, shell: true,
+                from:{
+                    name: "Devops Personoid",
+                    avatar_image_url: "http://localhost:5004/logo.png",
+                } });  
             }
             catch(error){
               reject(error);
@@ -258,15 +347,22 @@ export const PersonoidLiteKernel = {
             }
             if(terminate_after_seconds > 0){
               setTimeout(() => {
-                if (ended === true) {
+                if(ended)
                   return;
-                }
                 child.kill();
                 ended = false;
                 reject(new Error(`Timeout in blocking process. stderr: ${stderr} stdout: ${stdout} terminate_after_seconds: ${terminate_after_seconds} seconds`));
               }, 1000 * terminate_after_seconds);
             }
-            
+            if(nonBlockingResultAfter > 0){
+              setTimeout(() => {
+                if(ended)
+                  return;
+                if(terminate_after_seconds == 0)
+                  ended = true;
+                resolve({ code: 919, stderr, stdout });
+              }, nonBlockingResultAfter);
+            }
             child.stdout.on('data', (data) => {
               stdout += data;
             });
@@ -275,29 +371,46 @@ export const PersonoidLiteKernel = {
               stderr += data;
             });
             child.on('error', (error) => {
+              if(ended)
+                return;
               console.log(`child process errored with ${error} stderr: ${stderr} stdout: ${stdout}`);
               ended = true;
               reject(error);
-              stderr = stderr.slice(offset, offset + maxBytes);
-              stdout = stdout.slice(offset, offset + maxBytes);
+              var _stderr = stderr.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
+              var _stdout = stdout.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
 
-              resolve({ code:913, error, stderr, stdout });
+              resolve({ code:913, error, stderr:_stderr, stdout:_stdout,
+                stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
+                stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+                from:{
+                    name: "DevOps Personoid",
+                    avatar_image_url: "http://localhost:5004/logo.png",
+                }   
+              });
             });
             child.on('close', (code) => {
               console.log(`child process exited with code ${code}`);
+              if(ended)
+                return;
               ended = true;
-              stderr = stderr.slice(offset, offset + maxBytes);
-              stdout = stdout.slice(offset, offset + maxBytes);
-              resolve({ code, stderr, stdout });
+              var _stderr = stderr.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
+              var _stdout = stdout.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);              
+              resolve({ code, stderr: _stderr, stdout: _stdout,
+                stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
+                stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+                from:{
+                    name: "DevOps Personoid",
+                    avatar_image_url: "http://localhost:5004/logo.png",
+                }
             });
-          }
-          );
-        }
+
+          });
+        });
       }
     },
     "createOrUpdatePluginMethod": {
-      tags: ['Method'],
-      description: 'Creates or updates a method on this plugin',
+      tags: ['PluginMethod', 'PluginFunction'],
+      description: 'Creates or updates a method on this plugin. only use this if the user explitily requested to add, update or delete a functionality/method on the plugin.',
       request: {
         name: {
           type: 'string',
@@ -334,10 +447,16 @@ export const PersonoidLiteKernel = {
           type: 'string',
           description: javascript_code_description,
           required: false
+        },
+        bootstrap_auth_token:{
+          type: 'string',
+          description: 'The bootstrap auth token',
+          required: true,
         }
       },
       response: {},
-      handler: async ({ name, description, request_fields, javascript_code, imports ,isDelete }) => {
+      handler: async ({ name, description, request_fields, javascript_code, imports ,isDelete, bootstrap_auth_token }) => {
+        validateToken(bootstrap_auth_token);
         if (!name) {
           throw new Error("No name provided");
         }
@@ -401,7 +520,40 @@ export const PersonoidLiteKernel = {
           }
         };
         await global.inMemoryDocumentStoreForMethods.setDocument(name, { name, description, request_fields, javascript_code });
-        return { result: "success - created method " + name };
+        return { result: "success - created method " + name ,
+        from:{
+            name: "Plugin Developer Personoid",
+            avatar_image_url: "http://localhost:5004/logo.png",
+        }};
+      }
+    },
+    "npmPackage": {
+      tags: ['Package'],
+      description: 'Installs an npm package, or lists all installed packages if no package name is provided',
+      request: {
+        name: {
+          type: 'string',
+        },
+      },
+      response: {},
+      handler: async ({ name }) => {
+        if (!name) {
+          // list all installed packages
+          // npm list --depth=0
+          const { stdout, stderr } = await exec('npm list --depth=0 -p');
+          // parse stdout
+          return { packages: stdout.split("\n").filter((line) => line !== "") };
+        }
+        else {
+          // install package
+          // npm install <package>
+          const { stdout, stderr } = await exec('npm install ' + name);
+          return { stdout: stdout, stderr: stderr ,
+            from:{
+                name: "Dependencies Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            }};
+        }
       }
     },
     "webSearch": {
@@ -411,13 +563,20 @@ export const PersonoidLiteKernel = {
         query: {
           type: 'string',
         },
+        bootstrap_auth_token:{
+          type: 'string',
+          description: 'The bootstrap auth token',
+          required: true,
+        }
+
       },
       response: {
         webPages: {
           type: 'object',
         },
       },
-      handler: async ({ query }) => {
+      handler: async ({ query, bootstrap_auth_token }) => {
+        validateToken(bootstrap_auth_token);
         await selfImplement();
         // SERP API
         if (!serpAPIKey) {
@@ -425,7 +584,11 @@ export const PersonoidLiteKernel = {
         }
         const serpAPIUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&hl=en&gl=us&api_key=${serpAPIKey}`;
         const response = await axios.get(serpAPIUrl);
-        return { webPages: response.data.organic_results };
+        return { webPages: response.data.organic_results,
+          from:{
+              name: "Researcher Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          } };
       }
     },
     "urlFetch": {
@@ -456,7 +619,7 @@ export const PersonoidLiteKernel = {
         enableTextExtractionOnly: {
           type: 'boolean',
           default: false,
-          required: false,
+          required: true,
         },
         enableImageCaptionExtraction: {
           type: 'boolean',
@@ -497,13 +660,19 @@ export const PersonoidLiteKernel = {
           default: 0,
           required: false,
         },
+        bootstrap_auth_token:{
+          type: 'string',
+          description: 'The bootstrap auth token',
+          required: true,
+        }
       },
       response: {
         result: {
           type: 'string',
         },
       },
-      handler: async ({ url,request_method,request_headers,request_body,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes }) => {
+      handler: async ({ url,request_method,request_headers,request_body,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes ,bootstrap_auth_token}) => {
+        validateToken(bootstrap_auth_token);
         let response;
         maxBytes = maxBytes || 2000;
         if(maxBytes > 4096){
@@ -568,13 +737,18 @@ export const PersonoidLiteKernel = {
         //   const imageCaptionExtractionUrl = `https://api.deepai.org/api/neuraltalk`;
         //   finalResult = "image caption extraction not implemented yet: " + imageCaptionExtractionUrl;
         // }
+        let finalResultCut = finalResult;
         if(offset > 0){
-          finalResult = finalResult.substring(offset);
+          finalResultCut = finalResultCut.substring(offset * maxBytes);
         }
-        if (finalResult.length > maxBytes)
-          finalResult = finalResult.substring(0, maxBytes) + "...";
-
-        return { result: finalResult };
+        if (finalResultCut.length > maxBytes)
+        finalResultCut = finalResultCut.substring(0, maxBytes) + "...";
+        return { result: finalResultCut ,
+          pagesCount: Math.ceil(finalResult.length / maxBytes),
+          from:{
+              name: "Resarch Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "storeDocument": {
@@ -605,7 +779,11 @@ export const PersonoidLiteKernel = {
           document = JSON.parse(document_json);
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const newId = await _inMemoryDocumentStore.setDocument(id, document);
-        return { result: newId };
+        return { result: newId ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "getSingleDocument": {
@@ -626,7 +804,11 @@ export const PersonoidLiteKernel = {
       handler: async ({ id, collection }) => {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const document = await _inMemoryDocumentStore.getDocument(id);
-        return { document };
+        return { document ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "similarityQuery": {
@@ -651,7 +833,11 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.similarity_query(match_string);
-        return { results };
+        return { results ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "listAllDocuments": {
@@ -679,7 +865,11 @@ export const PersonoidLiteKernel = {
       handler: async ({ collection , include_fields}) => {
         include_fields = include_fields || ["id", "text", "name"];
         if (inMemoryDocumentStores.stores[collection] === undefined)
-          return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") };
+          return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.structured_query(undefined, 10);
@@ -690,7 +880,11 @@ export const PersonoidLiteKernel = {
             result[field] = r[field];
           }
           return result;
-        })
+        }),
+        from:{
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/logo.png",
+        }
          };
       }
     },
@@ -707,7 +901,11 @@ export const PersonoidLiteKernel = {
       },
       handler: async ({ }) => {
         const results = Object.keys(inMemoryDocumentStores.stores);        
-        return { results };
+        return { results ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "structuredQuery": {
@@ -738,7 +936,11 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.structured_query(query || {});
-        return { results };
+        return { results ,
+          from:{
+              name: "Memory Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }};
       }
     },
     "bootstrapPlugin": {
@@ -746,17 +948,23 @@ export const PersonoidLiteKernel = {
       description: 'bootstraps the plugin. use this when the user explicitly requests it by typing "bootstrap" or "boot" or "begin" , etc',
       handler: async () => {
         booted = true;
-        return { nextInstructions: bootstrapInstructions + "\n" + further_instructions };
+        const newAuthToken = new Date().getTime() + "-" + Math.random();
+        addToken(newAuthToken);
+        return { 
+          nextInstructions: bootstrapInstructions + "\n" + further_instructions ,
+          auth_token: newAuthToken,
+          from:{
+              name: "Team Leader Personoid",
+              avatar_image_url: "http://localhost:5004/logo.png",
+          }
+        };
       }
     },
     "furtherInstructions": {
       tags: ['boot'],
       description: 'instructions for the plugin. use this once in a session before you interact with the plugin',
-      handler: async () => {
-        let shouldBoot = false;
-        if (!booted)
-          shouldBoot = true;
-        return { instructions: further_instructions + (shouldBoot ? "use the bootstrap method to get started" : "") };
+      handler: async () => {        
+        return { instructions: further_instructions };
       }
     },
     "resetAll": {
@@ -786,7 +994,7 @@ export const PersonoidLiteKernel = {
     },
     "renderImageFileByTextPrompt": {
       tags: ['Text2Image'],
-      description: 'renders an image file by text prompt',
+      description: 'renders an image file by text prompt. size must be either 256, 512, or 1024. prompt must be a description of the image you want to generate, including styles, colors, objects, etc.',
       request: {
         prompt: {
           type: 'string',
@@ -794,10 +1002,13 @@ export const PersonoidLiteKernel = {
         size: {
           type: 'number',
           default: 512,
+          description: 'size of the image in pixels, must be either 256, 512, or 1024',
+          required: false,
         },
         num_images: {
           type: 'number',
           default: 1,
+          required: false,
         },
       },
       response: {},
@@ -809,7 +1020,11 @@ export const PersonoidLiteKernel = {
             n: num_images || 1,
             size: `${size}x${size}`
           });
-          return { result: response.data };
+          return { result: response.data,
+            from:{
+                name: "Designer Personoid",
+                avatar_image_url: "http://localhost:5004/logo.png",
+            } };
         }
         catch (e) {
           const response = e.response;
