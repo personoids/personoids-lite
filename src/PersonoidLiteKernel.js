@@ -590,8 +590,15 @@ export const PersonoidLiteKernel = {
         else {
           // install package
           // npm install <package>
-          const stdout = execSync('npm install -g ' + name).toString();
-          return { stdout: stdout,
+          const stdoutGlobal = execSync('npm install -g ' + name,{
+            cwd: process.cwd(),
+            env: process.env,
+          }).toString();
+          const stdoutLocal = execSync('npm install ' + name,{
+            cwd: process.cwd(),
+            env: process.env,
+          }).toString();
+          return { stdoutGlobal, stdoutLocal,
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "Dependencies Personoid",
