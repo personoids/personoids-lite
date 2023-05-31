@@ -570,9 +570,15 @@ export const PersonoidLiteKernel = {
         name: {
           type: 'string',
         },
+        bootstrap_auth_token:{
+          type: 'string',
+          description: 'The bootstrap auth token',
+          required: true,
+        }
       },
       response: {},
-      handler: async ({ name }) => {
+      handler: async ({ name,bootstrap_auth_token }) => {
+        validateToken(bootstrap_auth_token);
         if (!name) {
           // list all installed packages
           // npm list --depth=0
@@ -896,6 +902,11 @@ export const PersonoidLiteKernel = {
           },
           default: ["id", "text", "name"]
         },
+        bootstrap_auth_token: {
+          type: 'string',
+          description: "bootstrap auth token",
+          required: true,
+        },
       },
       response: {
         results: {
@@ -905,7 +916,8 @@ export const PersonoidLiteKernel = {
           }
         },
       },
-      handler: async ({ collection , include_fields}) => {
+      handler: async ({ collection , include_fields, bootstrap_auth_token}) => {
+        validateToken(bootstrap_auth_token);
         include_fields = include_fields || ["id", "text", "name"];
         if (inMemoryDocumentStores.stores[collection] === undefined)
           return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") ,
