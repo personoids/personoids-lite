@@ -48,13 +48,19 @@ git clone https://github.com/personoids/chat-ai-plugin.git
 cd chat-ai-plugin
 ```
 
-## Running Personoids Lite Plugin
+## Running Personoids 
+
+### Locally (recommended)
 
 ```bash
 export OPENAI_API_KEY=sk-your-openai-api-key
 export SERPAPI_API_KEY=your-serp-api-key # optional
 docker-compose up
 ```
+
+### using GitPod (work in progress)
+
+[Setup an env](https://gitpod.io/#https://github.com/personoids/personoids-lite)
 
 ## Installation in ChatGPT
 
