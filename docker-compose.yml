@@ -6,7 +6,7 @@ networks:
 
 services:
   chroma:
-    image: chroma
+    image: personoids/chroma
     build: 
       context: ./
       dockerfile: Dockerfile-chroma
@@ -21,7 +21,7 @@ services:
     networks:
       - net
   plugin:
-    image: plugin
+    image: personoids/plugin-lite
     restart: always 
     build: 
       context: ./
