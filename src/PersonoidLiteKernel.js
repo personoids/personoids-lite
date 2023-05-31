@@ -397,6 +397,7 @@ export const PersonoidLiteKernel = {
               resolve({ code:913, error, stderr:_stderr, stdout:_stdout,
                 stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+                nextInstructions: "preset the intermediate results in markdown format with the proxyFrom template.",
                 proxyFrom:{
                     name: "DevOps Personoid",
                     avatar_image_url: "http://localhost:5004/avatar/3.png",
@@ -413,6 +414,7 @@ export const PersonoidLiteKernel = {
               resolve({ code, stderr: _stderr, stdout: _stdout,
                 stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+                nextInstructions: "preset the intermediate results in markdown format with the proxyFrom template.",
                 proxyFrom:{
                     name: "DevOps Personoid",
                     avatar_image_url: "http://localhost:5004/avatar/3.png",
@@ -561,8 +563,8 @@ export const PersonoidLiteKernel = {
         }};
       }
     },
-    "npmPackage": {
-      tags: ['Package'],
+    "npm": {
+      tags: ['Package', "NPM", "install" ,"package"],
       description: 'Installs an npm package, or lists all installed packages if no package name is provided',
       request: {
         name: {
