@@ -1,1 +1,5 @@
-A plugin that can extend itself, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize a web requests, run request using a sub-personal assistant (openai requests), even create new methods on this plugin (you can create a method before you just before you call it if there is something you can\'t already do). you must call furtherInstructions before interacting with the plugin once every session !. 
+A plugin (Personoids) that plans, researches, builds, tests, troubleshoots and helps with anything:
+- extend the functionality of the plugin, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize a web requests. 
+- create new methods on this plugin: if there is something you are unable to do already, create a method before just before you call it. 
+
+call the "plan" method before you start a task. Call it method whenever you need to plan anything, or break down a big task into smaller tasks.
