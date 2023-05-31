@@ -1,5 +1,5 @@
 import path from 'path';
-import { createServer } from "@personoids/ai-plugin-router";
+import { createServer } from "./server";
 import { PersonoidLiteKernel } from "./PersonoidLiteKernel.js";
 // for resizing images
 import sharp from 'sharp';
