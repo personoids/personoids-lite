@@ -20,9 +20,9 @@ services:
   plugin:
     image: personoids/plugin-lite
     restart: always 
-    # build: 
-    #   context: ./
-    #   dockerfile: Dockerfile
+    build: 
+      context: ./
+      dockerfile: Dockerfile
     environment:
       - SERPAPI_API_KEY=${SERPAPI_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}

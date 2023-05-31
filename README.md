@@ -52,10 +52,20 @@ cd chat-ai-plugin
 
 ### Locally (recommended)
 
+#### Windows (cmd)
+
+```batch
+set OPENAI_API_KEY=sk-your-openai-api-key
+set SERPAPI_API_KEY=your-serp-api-key
+
+call start.bat
+```
+
+#### Mac / Linux
 ```bash
 export OPENAI_API_KEY=sk-your-openai-api-key
 export SERPAPI_API_KEY=your-serp-api-key # optional
-docker-compose up
+sh start.sh
 ```
 
 ### using GitPod (work in progress)
