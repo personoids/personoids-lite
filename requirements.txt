@@ -1,0 +1,4 @@
+FastAPI
+transformers
+chromadb
+langchain

@@ -478,15 +478,23 @@ export const PersonoidLiteKernel = {
         }
         if(isDelete === true){
           PersonoidLiteKernel[name] = undefined;
-          return { message: `deleted method ${name}` };
+          return { message: `deleted method ${name}` ,
+          nextInstructions: "preset the intermediate result in markdown format with the proxyFrom template.",
+          proxyFrom:{
+            name: "DevOps Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/3.png",
+          }
+        };
         }
         imports = imports || [];
-
+        let existed = false;
         // if (!description) {
         //   throw new Error("No description provided");
         // }
         request_fields = request_fields || [];
-
+        if(PersonoidLiteKernel.methods[name]){
+          existed = true;
+        }
         const parametersObject = {};
         request_fields.forEach((parameter) => {
           parametersObject[parameter] = {
@@ -543,8 +551,10 @@ export const PersonoidLiteKernel = {
           }
         };
         await global.inMemoryDocumentStoreForMethods.setDocument(name, { name, description, request_fields, javascript_code });
-        return { result: "success - created method " + name ,
-        nextInstructions: "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template.",
+        return { result: `success - ${existed ? "updated" : "created"} method ${name}`,
+        nextInstructions: existed ? 
+          "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." : 
+          "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Plugin Developer Personoid",
             avatar_image_url: "http://localhost:5004/avatar/1.png",
@@ -572,7 +582,7 @@ export const PersonoidLiteKernel = {
         else {
           // install package
           // npm install <package>
-          const stdout = execSync('npm install ' + name).toString();
+          const stdout = execSync('npm install -g ' + name).toString();
           return { stdout: stdout,
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
