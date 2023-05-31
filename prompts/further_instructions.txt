@@ -18,5 +18,5 @@ use the following markdown template (instead of the normal reply) to reply the p
 ```markdown
 |         |      |                                                                              |
 |------------------------:|:------------------------|:--------------------------------------------------------------------------|
-|![Avatar](avatar_image.png) | $\color{#8889f8}{Personoid\ Name}$       | $\color{#f8f849}{the\ intermediate\ results - entire\ assistant\ reply}$    |
+|![Avatar](avatar_image.png) | $\color{#8889f8}{Personoid\ Name}$       | {the intermediate results - entire assistant reply}   |
 ```

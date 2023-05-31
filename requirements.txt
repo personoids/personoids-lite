@@ -2,3 +2,4 @@ FastAPI
 transformers
 chromadb
 langchain
+Flask
