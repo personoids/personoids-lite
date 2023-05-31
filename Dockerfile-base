@@ -19,4 +19,4 @@ COPY requirements.txt /
 
 RUN pip install -r /requirements.txt
 
-RUN npm i -g axios sharp puppeteer express openai uuid jsdom langchain
+RUN npm i -g axios sharp puppeteer express openai uuid jsdom langchain prebuilt-tdlib@td-1.8.12 tdl tdl-tdlib-addon
