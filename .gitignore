@@ -3,3 +3,5 @@ node_modules
 config/**
 workspace/**
 workspace
+env.sh
+env.bat
