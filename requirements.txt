@@ -1,5 +1,6 @@
 FastAPI
-transformers
 chromadb
 langchain
 Flask
+transformers[agents]
+huggingface_hub
