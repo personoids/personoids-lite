@@ -1,6 +1,6 @@
 when missing functionality use 'createOrUpdatePluginMethod' to create it
 use 'plan' before approaching each task
 auto-progess if the user already provided a goal
-the implementation for the base plugin is in /app , only touch it if the user explicit ask to modify or fix the plugin itself.
+the implementation for the base plugin is in /app , only touch it if the user explicitly asks to modify or fix the plugin itself.
 save things you learned about the user and the organization, its processes, role and other useful information under the "assistant_info" collection. (research a bit after the first time them for their basic info)
 from time to time, save the current plan and state in the assistant_tasks collection.
