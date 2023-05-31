@@ -96,7 +96,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             fromProxy: {
               name: "Planner",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/12.png",
             }
           }
         }
@@ -166,7 +166,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
             } };
         }
         else if (operation === 'writeFile' || operation === 'write') {
@@ -176,7 +176,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -187,7 +187,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -199,7 +199,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               }
             }
           }
@@ -210,7 +210,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               }
             }
           }
@@ -222,7 +222,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               } };
           }
           else {
@@ -233,7 +233,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               } };
           }
         }
@@ -244,7 +244,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               } };
           }
           else {
@@ -253,7 +253,7 @@ export const PersonoidLiteKernel = {
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/logo.png",
+                  avatar_image_url: "http://localhost:5004/avatar/5.png",
               } };
           }
         }
@@ -264,7 +264,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -352,8 +352,8 @@ export const PersonoidLiteKernel = {
             try{              
               child = spawn(command, { cwd, env, shell: true,
                 proxyFrom:{
-                    name: "Devops Personoid",
-                    avatar_image_url: "http://localhost:5004/logo.png",
+                    name: "DevOps Personoid",
+                    avatar_image_url: "http://localhost:5004/avatar/3.png",
                 } });  
             }
             catch(error){
@@ -399,7 +399,7 @@ export const PersonoidLiteKernel = {
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
                 proxyFrom:{
                     name: "DevOps Personoid",
-                    avatar_image_url: "http://localhost:5004/logo.png",
+                    avatar_image_url: "http://localhost:5004/avatar/3.png",
                 }   
               });
             });
@@ -415,7 +415,7 @@ export const PersonoidLiteKernel = {
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
                 proxyFrom:{
                     name: "DevOps Personoid",
-                    avatar_image_url: "http://localhost:5004/logo.png",
+                    avatar_image_url: "http://localhost:5004/avatar/3.png",
                 }
             });
 
@@ -547,7 +547,7 @@ export const PersonoidLiteKernel = {
         nextInstructions: "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Plugin Developer Personoid",
-            avatar_image_url: "http://localhost:5004/logo.png",
+            avatar_image_url: "http://localhost:5004/avatar/1.png",
         }};
       }
     },
@@ -577,7 +577,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "Dependencies Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/8.png",
             }};
         }
       }
@@ -614,7 +614,7 @@ export const PersonoidLiteKernel = {
           proxyFrom:{
               nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               name: "Researcher Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/9.png",
           } };
       }
     },
@@ -775,7 +775,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Resarch Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/6.png",
           }};
       }
     },
@@ -811,7 +811,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
       }
     },
@@ -837,7 +837,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
       }
     },
@@ -867,7 +867,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
       }
     },
@@ -900,7 +900,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
@@ -916,7 +916,7 @@ export const PersonoidLiteKernel = {
         nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Memory Personoid",
-            avatar_image_url: "http://localhost:5004/logo.png",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
         }
          };
       }
@@ -938,7 +938,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
       }
     },
@@ -974,7 +974,7 @@ export const PersonoidLiteKernel = {
           nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/7.png",
           }};
       }
     },
@@ -991,7 +991,7 @@ export const PersonoidLiteKernel = {
           nextInstructions2: "preset the results in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Team Leader Personoid",
-              avatar_image_url: "http://localhost:5004/logo.png",
+              avatar_image_url: "http://localhost:5004/avatar/11.png",
           }
         };
       }
@@ -1060,7 +1060,7 @@ export const PersonoidLiteKernel = {
             nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "Designer Personoid",
-                avatar_image_url: "http://localhost:5004/logo.png",
+                avatar_image_url: "http://localhost:5004/avatar/13.png",
             } };
         }
         catch (e) {
