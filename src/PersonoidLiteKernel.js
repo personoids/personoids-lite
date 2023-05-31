@@ -1006,13 +1006,6 @@ export const PersonoidLiteKernel = {
         };
       }
     },
-    "furtherInstructions": {
-      tags: ['boot'],
-      description: 'instructions for the plugin. use this once in a session before you interact with the plugin',
-      handler: async () => {        
-        return { instructions: further_instructions };
-      }
-    },
     "resetAll": {
       tags: ['Document'],
       description: 'resets the document store and plugins. only use this if the user explicitly requests it',
