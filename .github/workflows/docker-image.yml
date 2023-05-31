@@ -1,0 +1,37 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3    
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: personoids/plugin-lite
+        flavor: latest=true
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+          username: personoids
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}          
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v4.0.0
+      with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}  
+          push: true
