@@ -8,7 +8,9 @@ app.get("/logo.png", (req, res) => {
   const logoPath = path.resolve('./logo.png');
   res.sendFile(logoPath);
 });
-
+process.on("unhandledRejection", function(reason, thepromise){
+  console.log("Unhandled Promise Rejection", reason, thepromise);
+}); 
 const port = process.env.PORT || 5004;
 app.listen(port, () => {
   console.log(`Server running`);
