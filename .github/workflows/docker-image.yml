@@ -11,12 +11,21 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3    
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: personoids/plugin-lite
+        flavor: latest=true
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}    
     - name: Build and push Docker images
-      # You may pin to the exact commit or the version.
-      # uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
       uses: docker/build-push-action@v4.0.0
+      with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}      
