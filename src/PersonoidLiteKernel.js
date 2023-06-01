@@ -161,12 +161,12 @@ export const PersonoidLiteKernel = {
         offset = offset || 0;
         encoding = encoding || 'utf8';
         await selfImplement();
-        let result = {};
+        
         // from filesystem
         if (operation === 'readFile' || operation === 'read') {
           let contents = fs.readFileSync(path);
           contents = contents.toString().slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
-          result = {
+          return {
             contents,
             pagesCount: Math.ceil(contents.length / maxBytes),
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
@@ -225,7 +225,7 @@ export const PersonoidLiteKernel = {
         else if (operation === 'listFiles' || operation === 'list' || operation === 'ls' || operation === 'dir') {
           if (recursive === true) {
             const files = execSync(`find ${path} -type f`).toString().split("\n");
-            result = {
+            return {
               files,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom: {
@@ -237,7 +237,7 @@ export const PersonoidLiteKernel = {
           else {
             const files = fs.readdirSync(path);
 
-            result = {
+            return {
               files,
               filesCount: files.length,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
@@ -251,7 +251,7 @@ export const PersonoidLiteKernel = {
         else if (operation === 'listDirectories' || operation === 'find') {
           if (recursive === true) {
             const directories = execSync(`find ${path} -type d`).toString().split("\n");
-            result = {
+            return {
               directories,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom: {
@@ -262,7 +262,7 @@ export const PersonoidLiteKernel = {
           }
           else {
             const directories = fs.readdirSync(path);
-            result = {
+            return {
               directories,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom: {
@@ -1287,6 +1287,34 @@ export const PersonoidLiteKernel = {
 
     }
 
-  }
+  },
+  "generatePDFFromHTML": {
+    tags: ['Document', "PDF", "HTML", "Convert"],
+    description: 'converts an html file to a pdf file',
+    request: {
+      inFilePath: {
+        name: 'inFilePath',
+        type: 'string',
+        required: true,
+      },
+      outFilePath: {
+        name: 'outFilePath',
+        type: 'string',
+        required: true,
+      },
+    },
+    response: {
+    },
+    method: "post",
+    handler: async ({ inFilePath, outFilePath }) => {
+      const html = fs.readFileSync(inFilePath, 'utf8');
+      const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+      const page = await browser.newPage();
+      await page.setContent(html);
+      const pdf =  await page.pdf({path: outFilePath, format: 'A4'})
+      await browser.close();
+      return pdf;
+    }
+  },
 }
 };
