@@ -559,7 +559,7 @@ export const PersonoidLiteKernel = {
           "summarize and present the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Plugin Developer Personoid",
-            avatar_image_url: "http://localhost:5004/avatar/1.png",
+            avatar_image_url: "http://localhost:5004/avatar/6.png",
         }};
       }
     },
