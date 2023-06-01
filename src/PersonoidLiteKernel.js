@@ -9,6 +9,11 @@ import { InMemoryDocumentStores } from "./InMemoryDocumentStores.js";
 import os from 'os';
 import jsdom from 'jsdom';
 
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import ExcelJS from 'exceljs';
+import csvParser from 'csv-parser';
+import mammoth from 'mammoth';
+
 const { JSDOM } = jsdom;
 global.DOMParser = new JSDOM().window.DOMParser
 global.axios = axios;
@@ -19,10 +24,10 @@ const bootstrapInstructions = fs.readFileSync(path.resolve("prompts/bootstrap_in
 const javascript_code_description = fs.readFileSync(path.resolve("prompts/javascript_code_description.txt")).toString();
 const description_for_model = fs.readFileSync(path.resolve("prompts/description_for_model.txt")).toString();
 const planning = fs.readFileSync(path.resolve("prompts/planning.txt")).toString();
-const self_implement = fs. readFileSync(path.resolve("prompts/self_implement.txt")).toString();
+const self_implement = fs.readFileSync(path.resolve("prompts/self_implement.txt")).toString();
 const selfImplementKernelFunctions = process.env.SELF_IMPLEMENT_KERNEL_FUNCTIONS === 'true';
 async function selfImplement() {
-  if(!selfImplementKernelFunctions)
+  if (!selfImplementKernelFunctions)
     return;
   const inDocker = () => {
     const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8');
@@ -31,11 +36,11 @@ async function selfImplement() {
   throw new Error(`${self_implement} ${os.platform()}. ${inDocker() ? "inside a container" : ""}`);
 }
 const tokens = {};
-function validateToken(token){
-  if(!tokens[token])
+function validateToken(token) {
+  if (!tokens[token])
     throw new Error("Invalid token, generate a new one with bootstrapPlugin");
 }
-function addToken(token){
+function addToken(token) {
   tokens[token] = true;
 }
 const inMemoryDocumentStores = new InMemoryDocumentStores();
@@ -76,30 +81,30 @@ export const PersonoidLiteKernel = {
   name_for_model: 'DoAnythingPlugin',
   logo_url: "http://localhost:5004/logo.png",
   methods: {
-    "plan":{       
-        method: "GET",
-        description: "Call this method whenever you need to plan anything, or break down a big task into smaller tasks.",
-        request: {
-          "bootstrap_auth_token": {
-            type: "string",
-            name: "bootstrap_auth_token",
-            description: "The bootstrap auth token. call bootstrapPlugin to get one.",
-            required: true,
-          },
+    "plan": {
+      method: "GET",
+      description: "Call this method whenever you need to plan anything, or break down a big task into smaller tasks.",
+      request: {
+        "bootstrap_auth_token": {
+          type: "string",
+          name: "bootstrap_auth_token",
+          description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
         },
-        response: {
-        },
-        handler: async (request) => {
-          validateToken(request.bootstrap_auth_token);
-          return {
-            result: planning,
-            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            fromProxy: {
-              name: "Planner",
-              avatar_image_url: "http://localhost:5004/avatar/12.png",
-            }
+      },
+      response: {
+      },
+      handler: async (request) => {
+        validateToken(request.bootstrap_auth_token);
+        return {
+          result: planning,
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+          fromProxy: {
+            name: "Planner",
+            avatar_image_url: "http://localhost:5004/avatar/12.png",
           }
         }
+      }
     },
     "fileSystemOperation": {
       tags: ['Filesystem'],
@@ -122,14 +127,14 @@ export const PersonoidLiteKernel = {
         encoding: {
           type: 'string',
           description: 'The encoding to use when reading or writing the file',
-          default: 'utf8',      
-          required: false,    
+          default: 'utf8',
+          required: false,
         },
         recursive: {
           type: 'boolean',
           description: 'If true, performs the operation recursively',
-          default: false,   
-          required: false,       
+          default: false,
+          required: false,
         },
         maxBytes: {
           type: 'number',
@@ -150,7 +155,7 @@ export const PersonoidLiteKernel = {
         },
       },
       response: {},
-      handler: async ({ operation, path, data, encoding, recursive ,maxBytes,offset,bootstrap_auth_token}) => {
+      handler: async ({ operation, path, data, encoding, recursive, maxBytes, offset, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         maxBytes = maxBytes || 1000;
         offset = offset || 0;
@@ -160,23 +165,25 @@ export const PersonoidLiteKernel = {
         // from filesystem
         if (operation === 'readFile' || operation === 'read') {
           let contents = fs.readFileSync(path);
-          contents = contents.toString().slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
-          result = { contents,
-            pagesCount: Math.ceil(contents.length/maxBytes),
+          contents = contents.toString().slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
+          result = {
+            contents,
+            pagesCount: Math.ceil(contents.length / maxBytes),
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/5.png",
-            } };
+            proxyFrom: {
+              name: "File System Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/5.png",
+            }
+          };
         }
         else if (operation === 'writeFile' || operation === 'write') {
           fs.writeFileSync(path, data);
           return {
             result: `wrote ${data.length} bytes to ${path}`,
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/5.png",
+            proxyFrom: {
+              name: "File System Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -185,9 +192,9 @@ export const PersonoidLiteKernel = {
           return {
             result: `appended ${data.length} bytes to ${path}`,
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/5.png",
+            proxyFrom: {
+              name: "File System Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -197,20 +204,20 @@ export const PersonoidLiteKernel = {
             return {
               result: `deleted ${path} recursively`,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
               }
             }
           }
-          else{
+          else {
             fs.unlinkSync(path);
             return {
               result: `deleted ${path}`,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
               }
             }
           }
@@ -218,43 +225,51 @@ export const PersonoidLiteKernel = {
         else if (operation === 'listFiles' || operation === 'list' || operation === 'ls' || operation === 'dir') {
           if (recursive === true) {
             const files = execSync(`find ${path} -type f`).toString().split("\n");
-            result = { files,
+            result = {
+              files,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
-              } };
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
+              }
+            };
           }
           else {
             const files = fs.readdirSync(path);
-            
-            result = { files,
+
+            result = {
+              files,
               filesCount: files.length,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
-              } };
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
+              }
+            };
           }
         }
         else if (operation === 'listDirectories' || operation === 'find') {
           if (recursive === true) {
             const directories = execSync(`find ${path} -type d`).toString().split("\n");
-            result = { directories,
+            result = {
+              directories,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
-              } };
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
+              }
+            };
           }
           else {
             const directories = fs.readdirSync(path);
-            result = { directories,
+            result = {
+              directories,
               nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-              proxyFrom:{
-                  name: "File System Personoid",
-                  avatar_image_url: "http://localhost:5004/avatar/5.png",
-              } };
+              proxyFrom: {
+                name: "File System Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/5.png",
+              }
+            };
           }
         }
         else if (operation === 'createDirectory' || operation === 'mkdir' || operation === 'md' || operation === 'mkdirp') {
@@ -262,9 +277,9 @@ export const PersonoidLiteKernel = {
           return {
             result: `created ${path}`,
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "File System Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/5.png",
+            proxyFrom: {
+              name: "File System Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/5.png",
             }
           }
         }
@@ -310,23 +325,23 @@ export const PersonoidLiteKernel = {
           default: 0,
           required: false,
         },
-        bootstrap_auth_token:{
+        bootstrap_auth_token: {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
         }
       },
       response: {},
-      handler: async ({ command, cwd, env_string, blocking , terminate_after_seconds,maxBytes,offset,bootstrap_auth_token}) => {
+      handler: async ({ command, cwd, env_string, blocking, terminate_after_seconds, maxBytes, offset, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         maxBytes = maxBytes || 1000;
         offset = offset || 0;
         await selfImplement();
-        if(blocking)
+        if (blocking)
           terminate_after_seconds = terminate_after_seconds || 5 * 60;
-        
+
         const nonBlockingResultAfter = blocking ? 0 : 10 * 1000;
-        const env = {...process.env};
+        const env = { ...process.env };
         if (env_string) {
           const envs = env_string.split("\n");
           envs.forEach((env_line) => {
@@ -344,81 +359,85 @@ export const PersonoidLiteKernel = {
         //   return { pid: child.pid };
         // }
         // else {
-          return new Promise((resolve, reject) => {
-            let stderr = "";
-            let stdout = "";
-            let child;
-            let ended = false;
-            try{              
-              child = spawn(command, { cwd, env, shell: true,
-                proxyFrom:{
-                    name: "DevOps Personoid",
-                    avatar_image_url: "http://localhost:5004/avatar/3.png",
-                } });  
-            }
-            catch(error){
-              reject(error);
+        return new Promise((resolve, reject) => {
+          let stderr = "";
+          let stdout = "";
+          let child;
+          let ended = false;
+          try {
+            child = spawn(command, {
+              cwd, env, shell: true,
+              proxyFrom: {
+                name: "DevOps Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/3.png",
+              }
+            });
+          }
+          catch (error) {
+            reject(error);
+            return;
+          }
+          if (terminate_after_seconds > 0) {
+            setTimeout(() => {
+              if (ended)
+                return;
+              child.kill();
+              ended = false;
+              reject(new Error(`Timeout in blocking process. stderr: ${stderr} stdout: ${stdout} terminate_after_seconds: ${terminate_after_seconds} seconds`));
+            }, 1000 * terminate_after_seconds);
+          }
+          if (nonBlockingResultAfter > 0) {
+            setTimeout(() => {
+              if (ended)
+                return;
+              if (terminate_after_seconds == 0)
+                ended = true;
+              resolve({ code: 919, stderr, stdout });
+            }, nonBlockingResultAfter);
+          }
+          child.stdout.on('data', (data) => {
+            stdout += data;
+          });
+
+          child.stderr.on('data', (data) => {
+            stderr += data;
+          });
+          child.on('error', (error) => {
+            if (ended)
               return;
-            }
-            if(terminate_after_seconds > 0){
-              setTimeout(() => {
-                if(ended)
-                  return;
-                child.kill();
-                ended = false;
-                reject(new Error(`Timeout in blocking process. stderr: ${stderr} stdout: ${stdout} terminate_after_seconds: ${terminate_after_seconds} seconds`));
-              }, 1000 * terminate_after_seconds);
-            }
-            if(nonBlockingResultAfter > 0){
-              setTimeout(() => {
-                if(ended)
-                  return;
-                if(terminate_after_seconds == 0)
-                  ended = true;
-                resolve({ code: 919, stderr, stdout });
-              }, nonBlockingResultAfter);
-            }
-            child.stdout.on('data', (data) => {
-              stdout += data;
-            });
+            console.log(`child process errored with ${error} stderr: ${stderr} stdout: ${stdout}`);
+            ended = true;
+            reject(error);
+            var _stderr = stderr.slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
+            var _stdout = stdout.slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
 
-            child.stderr.on('data', (data) => {
-              stderr += data;
+            resolve({
+              code: 913, error, stderr: _stderr, stdout: _stdout,
+              stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
+              stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+              nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
+              proxyFrom: {
+                name: "DevOps Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/3.png",
+              }
             });
-            child.on('error', (error) => {
-              if(ended)
-                return;
-              console.log(`child process errored with ${error} stderr: ${stderr} stdout: ${stdout}`);
-              ended = true;
-              reject(error);
-              var _stderr = stderr.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
-              var _stdout = stdout.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
-
-              resolve({ code:913, error, stderr:_stderr, stdout:_stdout,
-                stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
-                stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
-                nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
-                proxyFrom:{
-                    name: "DevOps Personoid",
-                    avatar_image_url: "http://localhost:5004/avatar/3.png",
-                }   
-              });
-            });
-            child.on('close', (code) => {
-              console.log(`child process exited with code ${code}`);
-              if(ended)
-                return;
-              ended = true;
-              var _stderr = stderr.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
-              var _stdout = stdout.slice((offset*maxBytes), (offset*maxBytes) + maxBytes);              
-              resolve({ code, stderr: _stderr, stdout: _stdout,
-                stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
-                stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
-                nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
-                proxyFrom:{
-                    name: "DevOps Personoid",
-                    avatar_image_url: "http://localhost:5004/avatar/3.png",
-                }
+          });
+          child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+            if (ended)
+              return;
+            ended = true;
+            var _stderr = stderr.slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
+            var _stdout = stdout.slice((offset * maxBytes), (offset * maxBytes) + maxBytes);
+            resolve({
+              code, stderr: _stderr, stdout: _stdout,
+              stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
+              stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
+              nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
+              proxyFrom: {
+                name: "DevOps Personoid",
+                avatar_image_url: "http://localhost:5004/avatar/3.png",
+              }
             });
 
           });
@@ -466,27 +485,28 @@ export const PersonoidLiteKernel = {
           description: javascript_code_description,
           required: false
         },
-        bootstrap_auth_token:{
+        bootstrap_auth_token: {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
         }
       },
       response: {},
-      handler: async ({ name, description, request_fields, javascript_code, imports ,isDelete, bootstrap_auth_token }) => {
+      handler: async ({ name, description, request_fields, javascript_code, imports, isDelete, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         if (!name) {
           throw new Error("No name provided");
         }
-        if(isDelete === true){
+        if (isDelete === true) {
           PersonoidLiteKernel[name] = undefined;
-          return { message: `deleted method ${name}` ,
-          nextInstructions: "present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-            name: "DevOps Personoid",
-            avatar_image_url: "http://localhost:5004/avatar/3.png",
-          }
-        };
+          return {
+            message: `deleted method ${name}`,
+            nextInstructions: "present the intermediate result in markdown format with the proxyFrom template.",
+            proxyFrom: {
+              name: "DevOps Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/3.png",
+            }
+          };
         }
         imports = imports || [];
         let existed = false;
@@ -494,7 +514,7 @@ export const PersonoidLiteKernel = {
         //   throw new Error("No description provided");
         // }
         request_fields = request_fields || [];
-        if(PersonoidLiteKernel.methods[name]){
+        if (PersonoidLiteKernel.methods[name]) {
           existed = true;
         }
         const parametersObject = {};
@@ -532,7 +552,7 @@ export const PersonoidLiteKernel = {
         if (!actualFn)
           throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}");
 
-          PersonoidLiteKernel.methods[name] = {
+        PersonoidLiteKernel.methods[name] = {
           // tags: [name],
           description: description,
           request: parametersObject,
@@ -553,57 +573,61 @@ export const PersonoidLiteKernel = {
           }
         };
         await global.inMemoryDocumentStoreForMethods.setDocument(name, { name, description, request_fields, javascript_code });
-        return { result: `success - ${existed ? "updated" : "created"} method ${name}`,
-        nextInstructions: !existed ? 
-          "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." : 
-          "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-        proxyFrom:{
+        return {
+          result: `success - ${existed ? "updated" : "created"} method ${name}`,
+          nextInstructions: !existed ?
+            "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." :
+            "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+          proxyFrom: {
             name: "Plugin Developer Personoid",
             avatar_image_url: "http://localhost:5004/avatar/6.png",
-        }};
+          }
+        };
       }
     },
     "npm": {
-      tags: ['Package', "NPM", "install" ,"package"],
+      tags: ['Package', "NPM", "install", "package"],
       description: 'Installs an npm package, or lists all installed packages if no package name is provided',
       request: {
         name: {
           type: 'string',
         },
-        bootstrap_auth_token:{
+        bootstrap_auth_token: {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
         }
       },
       response: {},
-      handler: async ({ name,bootstrap_auth_token }) => {
+      handler: async ({ name, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         if (!name) {
           // list all installed packages
           // npm list --depth=0
-          
-          const stdout= execSync('npm list --depth=0 -p').toString();
+
+          const stdout = execSync('npm list --depth=0 -p').toString();
           // parse stdout
           return { packages: stdout.split("\n").filter((line) => line !== "") };
         }
         else {
           // install package
           // npm install <package>
-          const stdoutGlobal = execSync('npm install -g ' + name,{
+          const stdoutGlobal = execSync('npm install -g ' + name, {
             cwd: process.cwd(),
             env: process.env,
           }).toString();
-          const stdoutLocal = execSync('npm install ' + name,{
+          const stdoutLocal = execSync('npm install ' + name, {
             cwd: process.cwd(),
             env: process.env,
           }).toString();
-          return { stdoutGlobal, stdoutLocal,
+          return {
+            stdoutGlobal, stdoutLocal,
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "Dependencies Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/8.png",
-            }};
+            proxyFrom: {
+              name: "Dependencies Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/8.png",
+            }
+          };
         }
       }
     },
@@ -614,7 +638,7 @@ export const PersonoidLiteKernel = {
         query: {
           type: 'string',
         },
-        bootstrap_auth_token:{
+        bootstrap_auth_token: {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
@@ -635,12 +659,14 @@ export const PersonoidLiteKernel = {
         }
         const serpAPIUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&hl=en&gl=us&api_key=${serpAPIKey}`;
         const response = await axios.get(serpAPIUrl);
-        return { webPages: response.data.organic_results,
+        return {
+          webPages: response.data.organic_results,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Researcher Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/9.png",
-          } };
+          proxyFrom: {
+            name: "Researcher Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/9.png",
+          }
+        };
       }
     },
     "urlFetch": {
@@ -650,20 +676,20 @@ export const PersonoidLiteKernel = {
         url: {
           type: 'string',
         },
-        request_method:{
+        request_method: {
           type: 'string',
           default: "GET",
           required: false,
         },
-        request_headers:{
+        request_headers: {
           type: 'array',
           default: [],
           required: false,
           items: {
-            type:"string",
+            type: "string",
           }
         },
-        request_body:{
+        request_body: {
           type: 'string',
           default: "",
           required: false,
@@ -712,7 +738,7 @@ export const PersonoidLiteKernel = {
           default: 0,
           required: false,
         },
-        bootstrap_auth_token:{
+        bootstrap_auth_token: {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
@@ -723,19 +749,19 @@ export const PersonoidLiteKernel = {
           type: 'string',
         },
       },
-      handler: async ({ url,request_method,request_headers,request_body,offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes ,bootstrap_auth_token}) => {
+      handler: async ({ url, request_method, request_headers, request_body, offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         let response;
         maxBytes = maxBytes || 2000;
-        if(maxBytes > 4096){
+        if (maxBytes > 4096) {
           throw new Error("maxBytes must be less than 4096");
-        }        
+        }
 
         try {
-          if(request_method === "POST"){
-            response = await axios.post(url,request_body,{maxRedirects: 5,headers:request_headers});
-          }else{
-            response = await axios.get(url,{maxRedirects: 5,headers:request_headers});
+          if (request_method === "POST") {
+            response = await axios.post(url, request_body, { maxRedirects: 5, headers: request_headers });
+          } else {
+            response = await axios.get(url, { maxRedirects: 5, headers: request_headers });
           }
           // now with follow redirects
           // response = await axios.get(url, { maxRedirects: 5, validateStatus: function (status) { return status >= 200 && status < 303; } });
@@ -744,10 +770,10 @@ export const PersonoidLiteKernel = {
         }
         catch (e) {
           const responseData = e.response && e.response.data;
-          if (responseData && responseData.error) 
-            return { error: responseData.error ,result:""};          
-          if(e.response && e.response.error)
-            return { error: e.response.error ,result:""};          
+          if (responseData && responseData.error)
+            return { error: responseData.error, result: "" };
+          if (e.response && e.response.error)
+            return { error: e.response.error, result: "" };
           throw e;
         }
         let html = response.data;
@@ -790,18 +816,20 @@ export const PersonoidLiteKernel = {
         //   finalResult = "image caption extraction not implemented yet: " + imageCaptionExtractionUrl;
         // }
         let finalResultCut = finalResult;
-        if(offset > 0){
+        if (offset > 0) {
           finalResultCut = finalResultCut.substring(offset * maxBytes);
         }
         if (finalResultCut.length > maxBytes)
-        finalResultCut = finalResultCut.substring(0, maxBytes) + "...";
-        return { result: finalResultCut ,
+          finalResultCut = finalResultCut.substring(0, maxBytes) + "...";
+        return {
+          result: finalResultCut,
           pagesCount: Math.ceil(finalResult.length / maxBytes),
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Resarch Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/6.png",
-          }};
+          proxyFrom: {
+            name: "Resarch Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/6.png",
+          }
+        };
       }
     },
     "storeDocument": {
@@ -832,12 +860,14 @@ export const PersonoidLiteKernel = {
           document = JSON.parse(document_json);
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const newId = await _inMemoryDocumentStore.setDocument(id, document);
-        return { result: newId ,
+        return {
+          result: newId,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+          proxyFrom: {
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
+          }
+        };
       }
     },
     "getSingleDocument": {
@@ -858,12 +888,14 @@ export const PersonoidLiteKernel = {
       handler: async ({ id, collection }) => {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const document = await _inMemoryDocumentStore.getDocument(id);
-        return { document ,
+        return {
+          document,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+          proxyFrom: {
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
+          }
+        };
       }
     },
     "similarityQuery": {
@@ -888,12 +920,14 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.similarity_query(match_string);
-        return { results ,
+        return {
+          results,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+          proxyFrom: {
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
+          }
+        };
       }
     },
     "listAllDocuments": {
@@ -923,33 +957,36 @@ export const PersonoidLiteKernel = {
           }
         },
       },
-      handler: async ({ collection , include_fields, bootstrap_auth_token}) => {
+      handler: async ({ collection, include_fields, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         include_fields = include_fields || ["id", "text", "name"];
         if (inMemoryDocumentStores.stores[collection] === undefined)
-          return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") ,
-          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
+          return {
+            results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", "),
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+            proxyFrom: {
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+            }
+          };
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.structured_query(undefined, 10);
 
-        return { results: results.map(r => {
-          const result = {};
-          for (const field of include_fields) {
-            result[field] = r[field];
-          }
-          return result;
-        }),
-        nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-        proxyFrom:{
+        return {
+          results: results.map(r => {
+            const result = {};
+            for (const field of include_fields) {
+              result[field] = r[field];
+            }
+            return result;
+          }),
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+          proxyFrom: {
             name: "Memory Personoid",
             avatar_image_url: "http://localhost:5004/avatar/7.png",
-        }
-         };
+          }
+        };
       }
     },
     "listCollections": {
@@ -964,13 +1001,15 @@ export const PersonoidLiteKernel = {
         },
       },
       handler: async ({ }) => {
-        const results = Object.keys(inMemoryDocumentStores.stores);        
-        return { results ,
+        const results = Object.keys(inMemoryDocumentStores.stores);
+        return {
+          results,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+          proxyFrom: {
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
+          }
+        };
       }
     },
     "structuredQuery": {
@@ -1001,12 +1040,14 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
 
         const results = await _inMemoryDocumentStore.structured_query(query || {});
-        return { results ,
+        return {
+          results,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Memory Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/7.png",
-          }};
+          proxyFrom: {
+            name: "Memory Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/7.png",
+          }
+        };
       }
     },
     "bootstrapPlugin": {
@@ -1016,13 +1057,13 @@ export const PersonoidLiteKernel = {
         booted = true;
         const newAuthToken = new Date().getTime() + "-" + Math.random();
         addToken(newAuthToken);
-        return { 
-          nextInstructions: bootstrapInstructions + "\n" + further_instructions ,
+        return {
+          nextInstructions: bootstrapInstructions + "\n" + further_instructions,
           auth_token: newAuthToken,
           nextInstructions2: "present the results in markdown format with the proxyFrom template.",
-          proxyFrom:{
-              name: "Team Leader Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/11.png",
+          proxyFrom: {
+            name: "Team Leader Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/11.png",
           }
         };
       }
@@ -1080,12 +1121,14 @@ export const PersonoidLiteKernel = {
             n: num_images || 1,
             size: `${size}x${size}`
           });
-          return { result: response.data,
+          return {
+            result: response.data,
             nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom:{
-                name: "Designer Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/13.png",
-            } };
+            proxyFrom: {
+              name: "Designer Personoid",
+              avatar_image_url: "http://localhost:5004/avatar/13.png",
+            }
+          };
         }
         catch (e) {
           const response = e.response;
@@ -1149,5 +1192,101 @@ export const PersonoidLiteKernel = {
         return html;
       }
     },
+    "serveFile": {
+      description: 'never call this directly. only as part of links that you provide to the user - serves a file from the file system.',
+      request: {
+        filePath: {
+          name: 'filePath',
+          type: 'string',
+          required: true,
+        },
+      },
+      method: "get",
+      // contentType: "text/html",
+      handler: async ({ filePath }) => {
+        const contents  = fs.readFileSync(filePath);
+        return contents;
+      },
+    },
+    "extractTextFromFile": {
+      tags: ['Document', "Docx", "PDF", "Text", "File", "CSV", "Excel", "Spreadsheet", "Convert"],
+      description: 'extracts text from a file. supports docx, pdf, txt, csv, and xls files',
+      request: {
+        filePath: {
+          name: 'filePath',
+          type: 'string',
+          required: true,
+        },
+        maxBytes: {
+          name: 'maxBytes',
+          type: 'number',
+          default: 1000,
+          required: false,
+        },
+        offset: {
+          name: 'offset',
+          type: 'number',
+          default: 0,
+          required: false,
+        },
+      },
+      response: {
+        text: {
+          type: 'string',
+        },
+      },
+
+      method: "get",
+      handler: async ({ filePath,maxBytes,offset }) => {
+        offset = offset || 0;
+        maxBytes = maxBytes || 1000;
+        const fileExtension = filePath.split('.').pop().toLowerCase();
+        let fileContent = '';
+        switch (fileExtension) {
+          case 'docx':
+            fileContent = (await mammoth.extractRawText({ path: filePath })).value;
+            break;
+          case 'pdf':
+            fileContent = (await pdfParse(fs.readFileSync(filePath))).text;
+            break;
+          case 'xlsx':
+          case 'xls':
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.readFile(filePath);
+            workbook.eachSheet(sheet => {
+              sheet.eachRow(row => {
+                fileContent += row.values.join(', ') + '\\n';
+              });
+            });
+            break;
+          case 'csv':
+            const readStream = fs.createReadStream(filePath);
+            readStream.pipe(csvParser()).on('data', (row) => {
+              fileContent += Object.values(row).join(', ') + '\\n';
+            });
+            await new Promise(resolve => readStream.on('end', resolve));
+            break;
+          case 'txt':
+            fileContent = fs.readFileSync(filePath, 'utf8');
+            break;
+
+          
+          default:
+            throw new Error('Unsupported file type.');
+        }
+        const pagesCount = fileContent.length / maxBytes;
+        return {  
+          text: fileContent.slice(offset*maxBytes, offset + maxBytes),
+          pagesCount,
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",          
+          proxyFrom: {
+            name: "Extractor Personoid",
+            avatar_image_url: "http://localhost:5004/avatar/11.png",
+          }
+        };
+
+    }
+
   }
+}
 };

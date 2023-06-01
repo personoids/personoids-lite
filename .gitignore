@@ -5,3 +5,5 @@ workspace/**
 workspace
 env.sh
 env.bat
+.env
+root

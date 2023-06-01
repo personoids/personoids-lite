@@ -47,21 +47,7 @@ async function createRouter(
         res.setHeader('Content-Type', 'application/json;charset=UTF-8');
         res.send(resString);
     });
-    router.get('/openapi.json', apiOperation({
-        tags: ['Plugin'],
-        summary: 'AI Plugin OpenAPI',
-        operationId: 'openapi',
-        responses: {
-            200: {
-                description: 'AI Plugin OpenAPI',
-                content: {
-                    'application/json': {
-                        // any
-                    }
-                }
-            }
-        }
-    }), (req, res, next) => {
+    router.get('/openapi.json',  (req, res, next) => {
         // from express 
         const host = plugin_host || req.headers['host'];
         const paths = createPaths(router);
