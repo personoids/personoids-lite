@@ -1202,7 +1202,7 @@ export const PersonoidLiteKernel = {
         },
       },
       method: "get",
-      // contentType: "text/html",
+      contentType: "application/octet-stream",
       handler: async ({ filePath }) => {
         const contents  = fs.readFileSync(filePath);
         return contents;
