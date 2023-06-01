@@ -18,13 +18,20 @@ jobs:
           username: personoids
           password: ${{ secrets.DOCKER_HUB_TOKEN }}          
     - uses: actions/checkout@v3    
-    - name: Build and push Docker images
+    - name: Build and push Base
       uses: docker/build-push-action@v4.0.0
       with:
           context: .
           file: ./Dockerfile-base
           tags: personoids/plugin-base:latest
           push: true
+    - name: Build and push chroma
+      uses: docker/build-push-action@v4.0.0
+      with:
+          context: .
+          file: ./Dockerfile-chroma
+          tags: personoids/chroma:latest
+          push: true          
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v4
@@ -35,7 +42,7 @@ jobs:
           type=ref,event=branch
           type=ref,event=pr
           type=semver,pattern={{version}}    
-    - name: Build and push Docker images
+    - name: Build and push plugin
       uses: docker/build-push-action@v4.0.0
       with:
           context: .
