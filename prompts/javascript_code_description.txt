@@ -2,6 +2,7 @@ The javascript code to run when this method is called, including the function de
 global.someGlobalVariable = 'someGlobalValue';
 async ({parameter1, parameter2, importsObject})=> {
   // actual implementation using global.axios, inMemoryDocumentStore, inMemoryDocumentStores, importsObject.twit, importsObject.fs , importsObject.puppeteer etc.
+  // never use require(), only importsObject
   
   CODE_HERE
 

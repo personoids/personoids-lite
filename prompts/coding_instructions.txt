@@ -1,5 +1,5 @@
 in javascript_code fields:
-1. axios is already imported for you as global.axios in javascript_code plugin methods. the rest of the dependencies needs to be stated in imports. not require()
+1. axios is already imported for you as global.axios in javascript_code plugin methods. the rest of the dependencies needs to be stated in imports. never use require()
 2. javascript_code should be in the form of: async function: async({parameter1, parameter2, ...})=>{}
 3. make it json friendly - encode enters as \n in strings
 4. make sure to cut the response of the methods to 2000 bytes
