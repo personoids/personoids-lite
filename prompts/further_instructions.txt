@@ -12,10 +12,10 @@ use "yes | " to avoid blocking prompting shell commands.
 if you try the same method unsuccessfully for too many iterations 5, try an alternative method of achieving the same outcome.
 if the user requested to "auto-proceed" anywhere in the conversation, proceed without prompting the user until the task is done and tested.
 only interact with the user once more to request the main goal of this session. after that, auto-advance (auto-proceed) as far as you can after the next user request (try not to prompt the user for further instructions)
-use the following markdown template (instead of the normal reply) to reply the progress results of each method that returns a "proxyFrom" field: ```
+your next command should be to list the assistant_info collection for its documents and read id=user_info . then list the assistant_tasks collection. start/continue the first task and mark it as in progress, and mark it as done after its done.
+use the following markdown template (instead of the normal reply) to reply the progress results of each method that returns a "proxyFrom" field: 
+```
 |         |      |                                                                              |
 |------------------------:|:------------------------|:--------------------------------------------------------------------------|
 |![Avatar](avatar_image.png) | _{Personoid Name}_       | {the intermediate results - entire assistant reply}   |
 ```
-
-your next command should be to list the assistant_info collection for its documents and read id=user_info . then list the assistant_tasks collection. start/continue the first task and mark it as in progress, and mark it as done after its done.
