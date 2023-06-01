@@ -46,6 +46,7 @@ services:
       - 8083:8083
     volumes:
       - ./workspace:/usr/workspace
+      - ./root:/root      
     depends_on:
       - chroma
     networks:

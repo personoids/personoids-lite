@@ -554,7 +554,7 @@ export const PersonoidLiteKernel = {
         };
         await global.inMemoryDocumentStoreForMethods.setDocument(name, { name, description, request_fields, javascript_code });
         return { result: `success - ${existed ? "updated" : "created"} method ${name}`,
-        nextInstructions: existed ? 
+        nextInstructions: !existed ? 
           "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." : 
           "summarize and present the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
