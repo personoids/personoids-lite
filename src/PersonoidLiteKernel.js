@@ -93,7 +93,7 @@ export const PersonoidLiteKernel = {
           validateToken(request.bootstrap_auth_token);
           return {
             result: planning,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             fromProxy: {
               name: "Planner",
               avatar_image_url: "http://localhost:5004/avatar/12.png",
@@ -163,7 +163,7 @@ export const PersonoidLiteKernel = {
           contents = contents.toString().slice((offset*maxBytes), (offset*maxBytes) + maxBytes);
           result = { contents,
             pagesCount: Math.ceil(contents.length/maxBytes),
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -173,7 +173,7 @@ export const PersonoidLiteKernel = {
           fs.writeFileSync(path, data);
           return {
             result: `wrote ${data.length} bytes to ${path}`,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -184,7 +184,7 @@ export const PersonoidLiteKernel = {
           fs.appendFileSync(path, data);
           return {
             result: `appended ${data.length} bytes to ${path}`,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -196,7 +196,7 @@ export const PersonoidLiteKernel = {
             execSync(`rm -rf ${path}`);
             return {
               result: `deleted ${path} recursively`,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -207,7 +207,7 @@ export const PersonoidLiteKernel = {
             fs.unlinkSync(path);
             return {
               result: `deleted ${path}`,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -219,7 +219,7 @@ export const PersonoidLiteKernel = {
           if (recursive === true) {
             const files = execSync(`find ${path} -type f`).toString().split("\n");
             result = { files,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -230,7 +230,7 @@ export const PersonoidLiteKernel = {
             
             result = { files,
               filesCount: files.length,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -241,7 +241,7 @@ export const PersonoidLiteKernel = {
           if (recursive === true) {
             const directories = execSync(`find ${path} -type d`).toString().split("\n");
             result = { directories,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -250,7 +250,7 @@ export const PersonoidLiteKernel = {
           else {
             const directories = fs.readdirSync(path);
             result = { directories,
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+              nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
               proxyFrom:{
                   name: "File System Personoid",
                   avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -261,7 +261,7 @@ export const PersonoidLiteKernel = {
           fs.mkdirSync(path, { recursive: true });
           return {
             result: `created ${path}`,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "File System Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/5.png",
@@ -397,7 +397,7 @@ export const PersonoidLiteKernel = {
               resolve({ code:913, error, stderr:_stderr, stdout:_stdout,
                 stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
-                nextInstructions: "preset the intermediate results in markdown format with the proxyFrom template.",
+                nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
                 proxyFrom:{
                     name: "DevOps Personoid",
                     avatar_image_url: "http://localhost:5004/avatar/3.png",
@@ -414,7 +414,7 @@ export const PersonoidLiteKernel = {
               resolve({ code, stderr: _stderr, stdout: _stdout,
                 stdErrPagesCount: Math.ceil(stderr.length / maxBytes),
                 stdOutPagesCount: Math.ceil(stdout.length / maxBytes),
-                nextInstructions: "preset the intermediate results in markdown format with the proxyFrom template.",
+                nextInstructions: "present the intermediate results in markdown format with the proxyFrom template.",
                 proxyFrom:{
                     name: "DevOps Personoid",
                     avatar_image_url: "http://localhost:5004/avatar/3.png",
@@ -481,7 +481,7 @@ export const PersonoidLiteKernel = {
         if(isDelete === true){
           PersonoidLiteKernel[name] = undefined;
           return { message: `deleted method ${name}` ,
-          nextInstructions: "preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
             name: "DevOps Personoid",
             avatar_image_url: "http://localhost:5004/avatar/3.png",
@@ -556,7 +556,7 @@ export const PersonoidLiteKernel = {
         return { result: `success - ${existed ? "updated" : "created"} method ${name}`,
         nextInstructions: existed ? 
           "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." : 
-          "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          "summarize and present the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Plugin Developer Personoid",
             avatar_image_url: "http://localhost:5004/avatar/1.png",
@@ -599,7 +599,7 @@ export const PersonoidLiteKernel = {
             env: process.env,
           }).toString();
           return { stdoutGlobal, stdoutLocal,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "Dependencies Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/8.png",
@@ -636,8 +636,8 @@ export const PersonoidLiteKernel = {
         const serpAPIUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&hl=en&gl=us&api_key=${serpAPIKey}`;
         const response = await axios.get(serpAPIUrl);
         return { webPages: response.data.organic_results,
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
-              nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
               name: "Researcher Personoid",
               avatar_image_url: "http://localhost:5004/avatar/9.png",
           } };
@@ -797,7 +797,7 @@ export const PersonoidLiteKernel = {
         finalResultCut = finalResultCut.substring(0, maxBytes) + "...";
         return { result: finalResultCut ,
           pagesCount: Math.ceil(finalResult.length / maxBytes),
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Resarch Personoid",
               avatar_image_url: "http://localhost:5004/avatar/6.png",
@@ -833,7 +833,7 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const newId = await _inMemoryDocumentStore.setDocument(id, document);
         return { result: newId ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -859,7 +859,7 @@ export const PersonoidLiteKernel = {
         const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(collection);
         const document = await _inMemoryDocumentStore.getDocument(id);
         return { document ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -889,7 +889,7 @@ export const PersonoidLiteKernel = {
 
         const results = await _inMemoryDocumentStore.similarity_query(match_string);
         return { results ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -928,7 +928,7 @@ export const PersonoidLiteKernel = {
         include_fields = include_fields || ["id", "text", "name"];
         if (inMemoryDocumentStores.stores[collection] === undefined)
           return { results: [], error: "collection not found: did you mean: " + Object.keys(inMemoryDocumentStores.stores).join(", ") ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -944,7 +944,7 @@ export const PersonoidLiteKernel = {
           }
           return result;
         }),
-        nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+        nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
         proxyFrom:{
             name: "Memory Personoid",
             avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -966,7 +966,7 @@ export const PersonoidLiteKernel = {
       handler: async ({ }) => {
         const results = Object.keys(inMemoryDocumentStores.stores);        
         return { results ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -1002,7 +1002,7 @@ export const PersonoidLiteKernel = {
 
         const results = await _inMemoryDocumentStore.structured_query(query || {});
         return { results ,
-          nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Memory Personoid",
               avatar_image_url: "http://localhost:5004/avatar/7.png",
@@ -1019,7 +1019,7 @@ export const PersonoidLiteKernel = {
         return { 
           nextInstructions: bootstrapInstructions + "\n" + further_instructions ,
           auth_token: newAuthToken,
-          nextInstructions2: "preset the results in markdown format with the proxyFrom template.",
+          nextInstructions2: "present the results in markdown format with the proxyFrom template.",
           proxyFrom:{
               name: "Team Leader Personoid",
               avatar_image_url: "http://localhost:5004/avatar/11.png",
@@ -1081,7 +1081,7 @@ export const PersonoidLiteKernel = {
             size: `${size}x${size}`
           });
           return { result: response.data,
-            nextInstructions: "summarize and preset the intermediate result in markdown format with the proxyFrom template.",
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
             proxyFrom:{
                 name: "Designer Personoid",
                 avatar_image_url: "http://localhost:5004/avatar/13.png",
