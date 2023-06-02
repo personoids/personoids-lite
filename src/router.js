@@ -1,4 +1,5 @@
 import { defineAIPluginManifest } from 'chatgpt-plugin';
+import { execSync } from 'child_process';
 import { Router } from 'express';
 import { createPaths } from 'express-openapi-middleware';
 
@@ -173,8 +174,25 @@ async function createRouter(
                 const importsObject = {};
                 for (var i = 0; i < imports.length; i++) {
                     const importName = imports[i];
-                    
-                    importsObject[importName] = await import(importName);
+                    try{
+                        importsObject[importName] = await import(importName);
+                    }
+                    catch(e){
+                        // try installing it and retry
+                        try{
+                            await execSync(`npm install -g ${importName}`,{
+                                cwd: "/app"
+                            });
+                            await execSync(`npm install ${importName}`,{
+                                cwd: "/app"
+                            });
+                            importsObject[importName] = await import(importName);
+                        }
+                        catch(e){
+                            console.log(`failed to install ${importName}`,e);
+                            throw new Error(`${importName} is failing to import, even after 'npm install ${importName}' : ${e.message}`);
+                        }                        
+                    }
                 }
                 
                 let arg = http_method === 'get' ? req.query : req.body;
@@ -182,7 +200,6 @@ async function createRouter(
                     arg = req.body.request;
                 }
                 arg.importsObject = importsObject;
-
                 const result = await handler(arg);
                 if (contentType === 'application/json') {
                     return res.status(200).json(result);
