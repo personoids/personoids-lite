@@ -1095,7 +1095,7 @@ export const PersonoidLiteKernel = {
     },
     "renderImageFileByTextPrompt": {
       tags: ['Text2Image'],
-      description: 'renders an image file by text prompt. size must be either 256, 512, or 1024. prompt must be a description of the image you want to generate, including styles, colors, objects, etc.',
+      description: 'generates an image file by text prompt. size must be either 256, 512, or 1024. prompt must be a description of the image you want to generate, including styles, colors, objects, etc.',
       request: {
         prompt: {
           type: 'string',
@@ -1106,10 +1106,10 @@ export const PersonoidLiteKernel = {
           description: 'size of the image in pixels, must be either 256, 512, or 1024',
           required: false,
         },
-        num_images: {
-          type: 'number',
-          default: 1,
-          required: false,
+        filePath: {
+          type: 'string',
+          description: 'path to the file to save the image to',
+          required: true,
         },
       },
       response: {},
@@ -1121,9 +1121,18 @@ export const PersonoidLiteKernel = {
             n: num_images || 1,
             size: `${size}x${size}`
           });
+          
+          const imageUrl = response.data.data[0].url;
+          // fetch the image and save to disk
+          const response2 = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+          const buffer = Buffer.from(response2.data, 'binary');
+          fs.writeFileSync(filePath, buffer);
+
+
           return {
-            result: response.data,
-            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+            localPath: filePath,
+            serveUrl: `http://localhost:5004/serveFile?filePath=${filePath}`,
+            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template. use the serveFile endpoint to serve the image file to the user.",
             proxyFrom: {
               name: "Designer Personoid",
               avatar_image_url: "http://localhost:5004/avatar/13.png",
