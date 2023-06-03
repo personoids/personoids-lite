@@ -1,0 +1,13 @@
+integrate trello with the plugin
+
+create methods to read:
+- organizations - only return id and name
+- boards by organization - only return id and name
+- lists by board - only return id and name
+- cards by list - only return id and name
+
+support pagination
+create methods to create and update the above
+use node-trello
+instruct the user on how to obtain key and token.
+store the key and token in assistant_info under trello_credentials

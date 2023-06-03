@@ -25,6 +25,7 @@ const javascript_code_description = fs.readFileSync(path.resolve("prompts/javasc
 const description_for_model = fs.readFileSync(path.resolve("prompts/description_for_model.txt")).toString();
 const planning = fs.readFileSync(path.resolve("prompts/planning.txt")).toString();
 const self_implement = fs.readFileSync(path.resolve("prompts/self_implement.txt")).toString();
+const kung_fu = fs.readFileSync(path.resolve("prompts/kung-fu.txt")).toString();
 const selfImplementKernelFunctions = process.env.SELF_IMPLEMENT_KERNEL_FUNCTIONS === 'true';
 async function selfImplement() {
   if (!selfImplementKernelFunctions)
@@ -75,12 +76,33 @@ async function init() {
 let booted = false;
 init();
 export const PersonoidLiteKernel = {
-  description_for_model: description_for_model + coding_instructions,
+  description_for_model: description_for_model,
   description_for_human: 'The Power of Autonomy in Every Chat.',
   name_for_human: 'Personoids Lite',
   name_for_model: 'DoAnythingPlugin',
   logo_url: "http://localhost:5004/logo.png",
   methods: {
+    "learn": {
+      tags: ['Learning', "Personoid", "Skill"],
+      method: "GET",
+      description: "Call this method whenever the user asks your to create a new personoid or learn a new skill or integration.",
+      request: {
+        "bootstrap_auth_token": {
+          type: "string",
+          name: "bootstrap_auth_token",
+          description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
+        },
+      },
+      response: {
+      },
+      handler: async (request) => {
+        validateToken(request.bootstrap_auth_token);
+        return {
+          learningInstructions: kung_fu,
+        }
+      }
+    },
     "plan": {
       method: "GET",
       description: "Call this method whenever you need to plan anything, or break down a big task into smaller tasks.",
@@ -446,7 +468,7 @@ export const PersonoidLiteKernel = {
     },
     "createOrUpdatePluginMethod": {
       tags: ['PluginMethod', 'PluginFunction'],
-      description: 'Creates or updates a method on this plugin. only use this if the user explitily requested to add, update or delete a functionality/method on the plugin.',
+      description: 'Creates or updates a method on this plugin. only use this if the user explitily requested to add, update or delete a functionality/method on the plugin. javascript_code should be empty on first call',
       request: {
         name: {
           type: 'string',
@@ -454,7 +476,7 @@ export const PersonoidLiteKernel = {
         description: {
           type: 'string',
           required: false,
-          description: "instruction for when to use this method, what it does, and how to use it."
+          description: "instruction for when to use this method, and how to use it."
         },
         request_fields: {
           type: 'array',
@@ -482,8 +504,9 @@ export const PersonoidLiteKernel = {
         },
         javascript_code: {
           type: 'string',
-          description: javascript_code_description,
-          required: false
+          description: "the javacript_code should be empty.",
+          required: false,
+          default: "",
         },
         bootstrap_auth_token: {
           type: 'string',
@@ -508,6 +531,9 @@ export const PersonoidLiteKernel = {
             }
           };
         }
+        if(!javascript_code || javascript_code.trim().length == 0){
+          throw new Error("call createOrUpdatePluginMethod again, but with javascript_code populated:\n "+javascript_code_description +"\n\n" + coding_instructions);
+        }
         imports = imports || [];
         let existed = false;
         // if (!description) {
@@ -531,13 +557,13 @@ export const PersonoidLiteKernel = {
           default: ""
         };
         if (javascript_code.includes("CODE_HERE")) {
-          throw new Error("must replace CODE_HERE with your actual code");
+          throw new Error("must replace CODE_HERE with your actual code.\n" +javascript_code_description +"\n\n" + coding_instructions);
         }
         if (javascript_code.includes("RETURN_STATEMENT_HERE")) {
-          throw new Error("must replace RETURN_STATEMENT_HERE with your actual return statement");
+          throw new Error("must replace RETURN_STATEMENT_HERE with your actual return statement\n" +javascript_code_description +"\n\n" + coding_instructions);
         }
         if (javascript_code.includes("global.someGlobalVariable")) {
-          throw new Error("must replace global.someGlobalVariable with your actual global variables");
+          throw new Error("must replace global.someGlobalVariable with your actual global variables\n" + +javascript_code_description +"\n\n" + coding_instructions );
         }
         if (javascript_code === "") {
           throw new Error("must pass in javascript_code");
@@ -547,10 +573,10 @@ export const PersonoidLiteKernel = {
           actualFn = eval(javascript_code);
         }
         catch (e) {
-          throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}\n but threw error: " + e.message);
+          throw new Error("javascript_code must be an anonymous async function: async ({importsObject, parameter1, parameter2, ...})=>{}\n\n"+javascript_code_description +"\n\n" + coding_instructions+ "\n\nbut threw error: " + e.message);
         }
         if (!actualFn)
-          throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}");
+          throw new Error("javascript_code must be an anonymous async function: async ({importsObject,parameter1, parameter2, ...})=>{}\n\n"+javascript_code_description +"\n\n" + coding_instructions);
 
         PersonoidLiteKernel.methods[name] = {
           // tags: [name],
@@ -564,7 +590,7 @@ export const PersonoidLiteKernel = {
             }
             catch (e) {
               if (e.message && e.message.includes("eval(...) is not a function")) {
-                throw new Error("javascript_code must be an anonymous async function: async ({parameter1, parameter2, ...})=>{}");
+                throw new Error("javascript_code must be an anonymous async function: async ({importsObject,parameter1, parameter2, ...})=>{}\n\n" +javascript_code_description +"\n\n" + coding_instructions);
               }
               else {
                 throw e;
@@ -577,7 +603,7 @@ export const PersonoidLiteKernel = {
           result: `success - ${existed ? "updated" : "created"} method ${name}`,
           nextInstructions: !existed ?
             "Stop and prompt the user to 'refresh the plugin' to be able to use the new method. preset it in markdown format with the proxyFrom template." :
-            "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+            "No stop is needed, the method is already available. auto-proceed.",
           proxyFrom: {
             name: "Plugin Developer Personoid",
             avatar_image_url: "http://localhost:5004/avatar/6.png",

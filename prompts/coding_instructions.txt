@@ -1,12 +1,9 @@
-in javascript_code fields:
 1. axios is already imported for you as global.axios in javascript_code plugin methods. the rest of the dependencies needs to be stated in imports. never use require()
-2. javascript_code should be in the form of: async function: async({parameter1, parameter2, ...})=>{}
+2. javascript_code should be in the form of: async function: async({parameter1, parameter2, ... , importsObject})=>{}
 3. make it json friendly - encode enters as \n in strings
-4. make sure to cut the response of the methods to 2000 bytes
+4. make sure to support pagination by cutting the responses of the methods to maxBytes (2000 by default) and using offset (in pages)
 5. you have inMemoryDocumentStore available to you as a global variable (set to the global collection), with these async members:
   5.1. getDocument(id) / setDocument(id, document) - gets / adds or sets the document with the given id (document is and object with at least the field 'text' - for matching with similarity_query)
   5.2. similarity_query(match_string) - returns the most similar documents to the match_document (which is a string)
   5.3. structured_query(query) - returns the most similar documents to the query (which is a structured query with the operators: $eq $ne $gt $gte $lt $lte). if query is undefined returns all documents
 6. you can use a different collection by calling: const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(name)
-7. you can generate links in the form of: http://localhost:5004/renderAsHtml?collection=html&id=id&html_field_name=html to display the user a web page.
-8. you can also store a manifest that points to multiple documents and let the renderAsHtml method render them combined as a single page (useful for storing and displaying long pages) - use the fields parts_field and parts_collection inside the manifest.

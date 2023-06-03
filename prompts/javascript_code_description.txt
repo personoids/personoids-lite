@@ -1,10 +1,9 @@
 The javascript code to run when this method is called, including the function declaration and async keyword, but replace the placeholders with your actual js code. in the format of:
-global.someGlobalVariable = 'someGlobalValue';
-ASYNC_ANONYMOUS_FUNCTION_DECL_WITH_A_SINGLE_REQUEST_PARAM ARROW START_BLOCK
+async ({importsObject,parameter1, parameter2, ...})=>{
   // never use require(), only importsObject
-  // importsObject = requestParam.importsObject
   // actual implementation using global.axios, inMemoryDocumentStore, inMemoryDocumentStores, importsObject.twit, importsObject.fs , puppeteer etc.
   CODE_HERE
-  // return the result as a json object:
+  // return the result as a json object , including proxyFrom field that includes name and avatar_image_url:
   RETURN_STATEMENT_HERE
 END_BLOCK
+

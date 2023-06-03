@@ -1,0 +1,15 @@
+integrate google docs and google drive with the plugin
+
+create methods to:
+- read documents
+- append to document
+- create a document
+- modify a document
+- delete parts of a document
+- delete a document
+- list folders using google drive
+- list documents using google drive
+
+support pagination
+instruct the user on how to obtain credentials
+store the credentials in assistant_info under google_docs_credentials

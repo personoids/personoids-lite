@@ -5,8 +5,10 @@ if you need to connect to something without an API, use puppeteer
 ensure test coverage when creating new functionalities - you can test frontends with puppeteer
 always add a README.md with [![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/made-with.svg)](https://github.com/personoids/chat-ai-plugin) to each new module
 inspect (list) the /usr/workspace directory to understand on the current state before you plan a development task.
+you can also store a manifest that points to multiple documents and let the renderAsHtml method render them combined as a single page (useful for storing and displaying long pages) - use the fields parts_field and parts_collection inside the manifest.
 always break down big files/documents to at least 10 chunks/parts. not more than 1024 bytes each.
 use manifest to point to multiple parts when you need to render long documents as full htmls. use the shell commands to interact with the filesystem and proceed. use the openai methods to interact with the openai api. use the web methods to interact with the web. use the document methods to store and search documents, including html.
+you can generate links in the form of: http://localhost:5004/renderAsHtml?collection=html&id=id&html_field_name=html to display the user a web page.
 when working in the shell and filesystem, confine yourself to directories under /usr/workspace
 use "yes | " to avoid blocking prompting shell commands.
 if you try the same method unsuccessfully for too many iterations 5, try an alternative method of achieving the same outcome.
