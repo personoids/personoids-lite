@@ -224,9 +224,16 @@ async function createRouter(
                 arg.importsObject = importsObject;
                 const result = await handler(arg);
                 if (contentType === 'application/json') {
+                    const resString = JSON.stringify(result, null, 2);
+                    if(resString.length > 4000){
+                        throw new Error(`response is too long, ${resString.length} bytes, please modify the function to support pagination using maxBytes and offset`);
+                    }
                     return res.status(200).json(result);
                 }
                 else {
+                    if(result.length > 4000){
+                        throw new Error(`response is too long, ${resString.length} bytes, please modify the function to support pagination using maxBytes and offset`);
+                    }
                     return res.status(200).send(result);
                 }
             }
