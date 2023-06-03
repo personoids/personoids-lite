@@ -223,6 +223,9 @@ async function createRouter(
                 }
                 arg.importsObject = importsObject;
                 const result = await handler(arg);
+                if(!result){
+                    throw new Error(`handler for ${method_name} did not return anything, modify the function to return a response`);
+                }
                 if (contentType === 'application/json') {
                     const resString = JSON.stringify(result, null, 2);
                     if(resString.length > 7000){
