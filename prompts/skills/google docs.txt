@@ -1,4 +1,4 @@
-integrate google docs and google drive with the plugin
+to integrate google docs and google drive with the plugin:
 
 create methods to:
 - read documents

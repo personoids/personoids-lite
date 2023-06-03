@@ -1,0 +1,49 @@
+[
+    {
+        "name": "trelloGetOrganizations",
+        "description": "This method retrieves the organizations from Trello.",
+        "request_fields": [
+          "bootstrap_auth_token"
+        ],
+        "imports": [
+          "node-trello"
+        ],
+        "javascript_code": "async ({bootstrap_auth_token, importsObject})=>{\r\n  const Trello = importsObject['node-trello'];\r\n  const trello = new Trello('key', 'token');\r\n  return new Promise((resolve, reject) => {\r\n    trello.get('/1/members/me/organizations', function(err, data) {\r\n      if (err) reject(err);\r\n      resolve({organizations: data.map(org => ({id: org.id, name: org.name})), proxyFrom: {name: 'Trello Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/9.png'}});\r\n    });\r\n  });\r\n}"
+      },
+      {
+        "name": "trelloGetBoardsByOrganization",
+        "description": "This method retrieves the boards for a given organization from Trello.",
+        "request_fields": [
+          "organization_id",
+          "bootstrap_auth_token"
+        ],
+        "imports": [
+          "node-trello"
+        ],
+        "javascript_code": "async ({organization_id, bootstrap_auth_token, importsObject})=>{\r\n  const Trello = importsObject['node-trello'];\r\n  const trello = new Trello('key', 'token');\r\n  return new Promise((resolve, reject) => {\r\n    trello.get(`/1/organizations/${organization_id}/boards`, function(err, data) {\r\n      if (err) reject(err);\r\n      resolve({boards: data.map(board => ({id: board.id, name: board.name})), proxyFrom: {name: 'Trello Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/9.png'}});\r\n    });\r\n  });\r\n}"
+      },
+      {
+        "name": "trelloGetListsByBoard",
+        "description": "This method retrieves the lists for a given board from Trello.",
+        "request_fields": [
+          "board_id",
+          "bootstrap_auth_token"
+        ],
+        "imports": [
+          "node-trello"
+        ],
+        "javascript_code": "async ({board_id, bootstrap_auth_token, importsObject})=>{\r\n  const Trello = importsObject['node-trello'];\r\n  const trello = new Trello('key', 'token');\r\n  return new Promise((resolve, reject) => {\r\n    trello.get(`/1/boards/${board_id}/lists`, function(err, data) {\r\n      if (err) reject(err);\r\n      resolve({lists: data.map(list => ({id: list.id, name: list.name})), proxyFrom: {name: 'Trello Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/9.png'}});\r\n    });\r\n  });\r\n}"
+      },
+      {
+        "name": "trelloGetCardsByList",
+        "description": "This method retrieves the cards for a given list from Trello.",
+        "request_fields": [
+          "list_id",
+          "bootstrap_auth_token"
+        ],
+        "imports": [
+          "node-trello"
+        ],
+        "javascript_code": "async ({list_id, bootstrap_auth_token, importsObject})=>{\r\n  const Trello = importsObject['node-trello'];\r\n  const trello = new Trello('key', 'token');\r\n  return new Promise((resolve, reject) => {\r\n    trello.get(`/1/lists/${list_id}/cards`, function(err, data) {\r\n      if (err) reject(err);\r\n      resolve({cards: data.map(card => ({id: card.id, name: card.name})), proxyFrom: {name: 'Trello Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/9.png'}});\r\n    });\r\n  });\r\n}"
+      }
+]

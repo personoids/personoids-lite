@@ -1,0 +1,6 @@
+to integrate trello with the plugin:
+
+1. instruct the user on how to obtain credentials using the OAuth 2.0 Playground.
+2. store the key and token in assistant_info under 'gmail'
+3. create the methods listed in /app/extendedSkills/gmail.json
+4. test all the new methods

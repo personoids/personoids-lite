@@ -1,13 +1,8 @@
-integrate trello with the plugin
+to integrate trello with the plugin:
 
-create methods to read:
-- organizations - only return id and name
-- boards by organization - only return id and name
-- lists by board - only return id and name
-- cards by list - only return id and name
-
-support pagination
-create methods to create and update the above
-use node-trello
-instruct the user on how to obtain key and token.
-store the key and token in assistant_info under trello_credentials
+1. instruct the user on how to obtain key and token from trello.com
+2. store the key and token in assistant_info under trello_credentials
+3. create the methods listed in /app/extendedSkills/trello.json , but replace the key and token with the right values.
+4. create methods to update cards and move them between lists
+5. create methods to create cards, boards and lists
+6. test all the new methods

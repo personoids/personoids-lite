@@ -1,0 +1,70 @@
+[{
+    "name": "gmailGetLabels",
+    "description": "This method retrieves the labels from Gmail.",
+    "request_fields": [
+      "access_token",
+      "refresh_token",
+      "bootstrap_auth_token"
+    ],
+    "imports": [
+      "googleapis"
+    ],
+    "javascript_code": "async ({access_token, refresh_token, bootstrap_auth_token, importsObject})=>{\r\n  const {google} = importsObject['googleapis'];\r\n  const oauth2Client = new google.auth.OAuth2();\r\n  oauth2Client.setCredentials({\r\n    access_token: access_token,\r\n    refresh_token: refresh_token\r\n  });\r\n  const gmail = google.gmail({version: 'v1', auth: oauth2Client});\r\n  const res = await gmail.users.labels.list({userId: 'me'});\r\n  return {labels: res.data.labels.map(label => ({id: label.id, name: label.name})), proxyFrom: {name: 'Gmail Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/10.png'}};\r\n}"
+  },
+  {
+    "name": "gmailGetEmails",
+    "description": "This method retrieves the latest emails from Gmail.",
+    "request_fields": [
+      "access_token",
+      "refresh_token",
+      "bootstrap_auth_token"
+    ],
+    "imports": [
+      "googleapis"
+    ],
+    "javascript_code": "async ({access_token, refresh_token, bootstrap_auth_token, importsObject})=>{\r\n  const {google} = importsObject['googleapis'];\r\n  const oauth2Client = new google.auth.OAuth2();\r\n  oauth2Client.setCredentials({\r\n    access_token: access_token,\r\n    refresh_token: refresh_token\r\n  });\r\n  const gmail = google.gmail({version: 'v1', auth: oauth2Client});\r\n  const res = await gmail.users.messages.list({userId: 'me', maxResults: 10});\r\n  const messages = await Promise.all(res.data.messages.map(async (message) => {\r\n    const msg = await gmail.users.messages.get({userId: 'me', id: message.id});\r\n    const payload = msg.data.payload;\r\n    const headers = payload.headers;\r\n    const subject = headers.find(header => header.name === 'Subject').value;\r\n    const from = headers.find(header => header.name === 'From').value;\r\n    return {id: msg.data.id, subject: subject, from: from};\r\n  }));\r\n  return {emails: messages, proxyFrom: {name: 'Gmail Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/10.png'}};\r\n}"
+  },
+  {
+    "name": "gmailGetEmailContent",
+    "description": "This method retrieves the content of an email from Gmail.",
+    "request_fields": [
+      "messageId",
+      "access_token",
+      "refresh_token",
+      "bootstrap_auth_token"
+    ],
+    "imports": [
+      "googleapis"
+    ],
+    "javascript_code": "async ({messageId, access_token, refresh_token, bootstrap_auth_token, importsObject})=>{\r\n  const {google} = importsObject['googleapis'];\r\n  const oauth2Client = new google.auth.OAuth2();\r\n  oauth2Client.setCredentials({\r\n    access_token: access_token,\r\n    refresh_token: refresh_token\r\n  });\r\n  const gmail = google.gmail({version: 'v1', auth: oauth2Client});\r\n  const msg = await gmail.users.messages.get({userId: 'me', id: messageId});\r\n  const payload = msg.data.payload;\r\n  const headers = payload.headers;\r\n  const subject = headers.find(header => header.name === 'Subject').value;\r\n  const from = headers.find(header => header.name === 'From').value;\r\n  let body = '';\r\n  if (payload.parts) {\r\n    body = payload.parts.map(part => {\r\n      if (part.body.data) {\r\n        let buff = new Buffer.from(part.body.data, 'base64');\r\n        return buff.toString('utf-8');\r\n      }\r\n    }).join('');\r\n  } else if (payload.body.data) {\r\n    let buff = new Buffer.from(payload.body.data, 'base64');\r\n    body = buff.toString('utf-8');\r\n  }\r\n  return {email: {id: msg.data.id, subject: subject, from: from, body: body}, nextInstructions: 'show the email body to the user as markdown', proxyFrom: {name: 'Gmail Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/10.png'}};\r\n}"
+  },
+  {
+    "name": "gmailSaveEmailContentToFile",
+    "description": "This method retrieves the content of an email from Gmail and saves it to a file.",
+    "request_fields": [
+      "messageId",
+      "access_token",
+      "refresh_token",
+      "filePath",
+      "bootstrap_auth_token"
+    ],
+    "imports": [
+      "googleapis",
+      "fs"
+    ],    
+    "javascript_code": "async ({messageId, access_token, refresh_token, filePath, bootstrap_auth_token, importsObject})=>{\r\n  const {google} = importsObject['googleapis'];\r\n  const fs = importsObject['fs'];\r\n  const oauth2Client = new google.auth.OAuth2();\r\n  oauth2Client.setCredentials({\r\n    access_token: access_token,\r\n    refresh_token: refresh_token\r\n  });\r\n  const gmail = google.gmail({version: 'v1', auth: oauth2Client});\r\n  const msg = await gmail.users.messages.get({userId: 'me', id: messageId});\r\n  const payload = msg.data.payload;\r\n  const headers = payload.headers;\r\n  const subject = headers.find(header => header.name === 'Subject').value;\r\n  const from = headers.find(header => header.name === 'From').value;\r\n  let body = '';\r\n  if (payload.parts) {\r\n    body = payload.parts.map(part => {\r\n      if (part.body.data) {\r\n        let buff = new Buffer.from(part.body.data, 'base64');\r\n        return buff.toString('utf-8');\r\n      }\r\n    }).join('');\r\n  } else if (payload.body.data) {\r\n    let buff = new Buffer.from(payload.body.data, 'base64');\r\n    body = buff.toString('utf-8');\r\n  }\r\n  fs.writeFileSync(filePath, body);\r\n  return {message: 'Email content saved to file. you can convert it to markdown if you need to display it, or use the renderAsHtml endpoint', proxyFrom: {name: 'Gmail Integration Personoid', avatar_image_url: 'http://localhost:5004/avatar/10.png'}};\r\n}"
+  },
+  {
+    "name": "convertHtmlFileToMarkdown",
+    "description": "This method converts HTML content in a file to Markdown format.",
+    "request_fields": [
+      "filePath",
+      "bootstrap_auth_token"
+    ],
+    "imports": [
+      "turndown",
+      "fs"
+    ],
+    "javascript_code": "async ({filePath, bootstrap_auth_token, importsObject})=>{\r\n  const fs = importsObject['fs'];\r\n  const TurndownService = importsObject['turndown'];\r\n  const turndownService = new TurndownService();\r\n  const htmlContent = fs.readFileSync(filePath, 'utf-8');\r\n  const markdown = turndownService.turndown(htmlContent);\r\n  return {markdown: markdown, proxyFrom: {name: 'Markdown Conversion Personoid', avatar_image_url: 'http://localhost:5004/avatar/11.png'}};\r\n}"
+  }
+]
