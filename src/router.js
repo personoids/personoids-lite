@@ -2,7 +2,7 @@ import { defineAIPluginManifest } from 'chatgpt-plugin';
 import { execSync } from 'child_process';
 import { Router } from 'express';
 import { createPaths } from 'express-openapi-middleware';
-
+import fs from 'fs';
 function apiOperation(operation) {
     const middleware = function (req, res, next) {
         req.apiOperation = operation;
@@ -186,12 +186,34 @@ async function createRouter(
                             await execSync(`npm install ${importName}`,{
                                 cwd: "/app"
                             });
-                            importsObject[importName] = await import(importName);
+                            try{
+                                importsObject[importName] = await import(importName);
+                            }
+                            catch(e){
+                                try{
+                                    importsObject[importName] = await import(importName + "/index.js");
+                                }
+                                catch(e){
+                                    // read the package.json and try to find the main file
+                                    const packageJson = fs.readFileSync(`node_modules/${importName}/package.json`);
+                                    const packageJsonObj = JSON.parse(packageJson);
+                                    const mainFile = packageJsonObj.main;
+                                    if(mainFile){
+                                        importsObject[importName] = await import(importName + "/" + mainFile);
+                                    }
+                                    else{
+                                        throw new Error(`package ${importName} does not have a main file`);
+                                    }
+                                }    
+                            }
                         }
                         catch(e){
                             console.log(`failed to install ${importName}`,e);
                             throw new Error(`${importName} is failing to import, even after 'npm install ${importName}' : ${e.message}`);
                         }                        
+                    }
+                    if(importsObject[importName].default){
+                        importsObject[importName] = importsObject[importName].default;
                     }
                 }
                 
@@ -209,7 +231,7 @@ async function createRouter(
                 }
             }
             catch (error) {
-                return res.status(500).json({ error: error.message });
+                return res.status(200).json({ error: error.message });
             }
         });
     }

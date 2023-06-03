@@ -97,8 +97,8 @@ export const PersonoidLiteKernel = {
       handler: async (request) => {
         validateToken(request.bootstrap_auth_token);
         return {
-          result: planning,
-          nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+          planningInstructions: planning,
+          nextInstructions: "present the plan result in markdown format with the proxyFrom template.",
           fromProxy: {
             name: "Planner",
             avatar_image_url: "http://localhost:5004/avatar/12.png",
@@ -1058,9 +1058,9 @@ export const PersonoidLiteKernel = {
         const newAuthToken = new Date().getTime() + "-" + Math.random();
         addToken(newAuthToken);
         return {
-          nextInstructions: bootstrapInstructions + "\n" + further_instructions,
+          assistantInstructions: bootstrapInstructions + "\n" + further_instructions,
           auth_token: newAuthToken,
-          nextInstructions2: "present the results in markdown format with the proxyFrom template.",
+          nextInstructions: "present the results in markdown format with the proxyFrom template.",
           proxyFrom: {
             name: "Team Leader Personoid",
             avatar_image_url: "http://localhost:5004/avatar/11.png",
