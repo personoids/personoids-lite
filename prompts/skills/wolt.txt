@@ -1,0 +1,36 @@
+to integrate wolt with the plugin:
+
+1. build the integration around this reference curl call:
+
+curl 'https://restaurant-api.wolt.com/v1/pages/search' \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'accept-language: en-US,en;q=0.9,he;q=0.8' \
+  -H 'app-language: en' \
+  -H 'cache-control: no-cache' \
+  -H 'client-version: 1.10.14' \
+  -H 'clientversionnumber: 1.10.14' \
+  -H 'content-type: application/json' \
+  -H 'origin: https://wolt.com' \
+  -H 'platform: Web' \
+  -H 'sec-ch-ua: "Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-site' \
+  --data-raw '{"q":"mcdonalds","target":"venues","lat":32.082368764975851,"lon":34.86985257564914,"sorting_and_filtering_v2":{"sections":[{"slug":"sort_by","values":[{"selected":true,"slug":"rating"}]}]}}' \
+  --compressed
+
+and extract those fields:
+    sections[0].items[0..5]
+        link.target
+        image.url
+        title
+        track_id
+        venue.address
+        rating
+        short_description
+        tags
+
+2. build a client side only web page that tells the users its GPS coordinates
+3. build a geocoding method based on IP

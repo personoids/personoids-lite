@@ -1,0 +1,1 @@
+create a method called howtoFactCheck that only returns an 'instructions' field that guides how to propely fact check.
