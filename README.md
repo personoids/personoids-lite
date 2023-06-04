@@ -2,9 +2,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/made-with.svg)](https://github.com/personoids/chat-ai-plugin)
 
-⭐ Star us on GitHub — it motivates us a lot!
+⭐ Star us on GitHub — it motivates us a lot! ⭐
 
 [Install Now](#installation)
+
+
+<img src="https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/images/Personoids%20hero.png" width=288 height=288 style='border-radius:50px'>
+
 
 # Personoids Lite for AI Chat 
 
