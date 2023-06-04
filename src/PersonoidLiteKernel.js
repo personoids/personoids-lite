@@ -18,6 +18,7 @@ const { JSDOM } = jsdom;
 global.DOMParser = new JSDOM().window.DOMParser
 global.axios = axios;
 
+const DEFAULT_MAX_BYTES = 6000;
 const coding_instructions = fs.readFileSync(path.resolve("prompts/coding_instructions.txt")).toString();
 const further_instructions = fs.readFileSync(path.resolve("prompts/further_instructions.txt")).toString();
 const bootstrapInstructions = fs.readFileSync(path.resolve("prompts/bootstrap_instructions.txt")).toString();
@@ -39,7 +40,7 @@ async function selfImplement() {
 const tokens = {};
 function validateToken(token) {
   if (!tokens[token])
-    throw new Error("Invalid token, generate a new one with bootstrapPlugin");
+    throw new Error("Invalid token, generate a new one with /bootstrapPlugin");
 }
 function addToken(token) {
   tokens[token] = true;
@@ -161,7 +162,7 @@ export const PersonoidLiteKernel = {
         maxBytes: {
           type: 'number',
           description: 'The maximum number of bytes to read',
-          default: 1000,
+          default: DEFAULT_MAX_BYTES,
           required: false,
         },
         offset: {
@@ -179,7 +180,7 @@ export const PersonoidLiteKernel = {
       response: {},
       handler: async ({ operation, path, data, encoding, recursive, maxBytes, offset, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
-        maxBytes = maxBytes || 1000;
+        maxBytes = maxBytes || DEFAULT_MAX_BYTES;
         offset = offset || 0;
         encoding = encoding || 'utf8';
         await selfImplement();
@@ -338,7 +339,7 @@ export const PersonoidLiteKernel = {
         maxBytes: {
           type: 'number',
           description: 'The maximum number of bytes to return from stdout and stderr',
-          default: 1000,
+          default: DEFAULT_MAX_BYTES,
           required: false,
         },
         offset: {
@@ -356,7 +357,7 @@ export const PersonoidLiteKernel = {
       response: {},
       handler: async ({ command, cwd, env_string, blocking, terminate_after_seconds, maxBytes, offset, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
-        maxBytes = maxBytes || 1000;
+        maxBytes = maxBytes || DEFAULT_MAX_BYTES;
         offset = offset || 0;
         await selfImplement();
         if (blocking)
@@ -756,7 +757,7 @@ export const PersonoidLiteKernel = {
         },
         maxBytes: {
           type: 'number',
-          default: 2000,
+          default: DEFAULT_MAX_BYTES,
           required: false,
         },
         offset: {
@@ -778,10 +779,7 @@ export const PersonoidLiteKernel = {
       handler: async ({ url, request_method, request_headers, request_body, offset, enableTextExtractionOnly, enableMicroFormatExtraction, xPathBasedSelector, cssBasedSelector, pureJavascriptBasedSelectorFunction, regexSelector, maxBytes, bootstrap_auth_token }) => {
         validateToken(bootstrap_auth_token);
         let response;
-        maxBytes = maxBytes || 2000;
-        if (maxBytes > 4096) {
-          throw new Error("maxBytes must be less than 4096");
-        }
+        maxBytes = maxBytes || DEFAULT_MAX_BYTES;
 
         try {
           if (request_method === "POST") {
@@ -1255,7 +1253,7 @@ export const PersonoidLiteKernel = {
         maxBytes: {
           name: 'maxBytes',
           type: 'number',
-          default: 1000,
+          default: DEFAULT_MAX_BYTES,
           required: false,
         },
         offset: {
@@ -1274,7 +1272,7 @@ export const PersonoidLiteKernel = {
       method: "get",
       handler: async ({ filePath,maxBytes,offset }) => {
         offset = offset || 0;
-        maxBytes = maxBytes || 1000;
+        maxBytes = maxBytes || DEFAULT_MAX_BYTES;
         const fileExtension = filePath.split('.').pop().toLowerCase();
         let fileContent = '';
         switch (fileExtension) {
