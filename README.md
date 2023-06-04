@@ -2,9 +2,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/made-with.svg)](https://github.com/personoids/chat-ai-plugin)
 
-⭐ Star us on GitHub — it motivates us a lot!
+⭐ Star us on GitHub — it motivates us a lot! ⭐
 
 [Install Now](#installation)
+
+
+<img src="https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/images/Personoids%20hero.png" width=288 height=288 style='border-radius:50px'>
+
 
 # Personoids Lite for AI Chat 
 
@@ -26,9 +30,9 @@ Personoids Lite is a transformative tool that enhances ChatGPT and other LLMs-ba
 
 Welcome to the era of Promptware, a revolutionary software paradigm brought to life by Personoids. Unlike traditional software that relies on rigid programming language instructions, Promptware is built on the flexibility of natural language instructions, or prompts. This shift in approach allows for more intuitive and dynamic interactions between users and software. With Personoids, you're not just coding; you're having a conversation with your software, guiding it through tasks with the ease of natural language. This is the future of software development, and it starts with Personoids Lite.
 
-## Demo
+## Examples
 
-[![](https://markdown-videos.deta.dev/youtube/DEjkHe9wzMQ)](https://youtu.be/DEjkHe9wzMQ)
+[Updating examples documant](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/EXAMPLES.md)
 
 ## Requirements
 
