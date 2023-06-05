@@ -1,0 +1,10 @@
+to integrate gcp with the plugin:
+
+0. research and plan
+1. instruct the user on how to obtain credentials
+2. store the key and token in assistant_info under gcp_credentials
+3. create methods to interact with GCP through the google sdk cli (and install the cli too) -  import child_process to spawn the processes (with a new Promise()).
+
+notes:
+
+plugin method parameters cannot be an object, must be a string that you can parse inside the function

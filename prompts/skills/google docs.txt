@@ -1,5 +1,4 @@
 to integrate google docs and google drive with the plugin:
-
 create methods to:
 - read documents
 - append to document
@@ -13,3 +12,8 @@ create methods to:
 support pagination
 instruct the user on how to obtain credentials
 store the credentials in assistant_info under google_docs_credentials
+
+ask the user if spreadsheet support is desired as well, if so, complete the integration of spreadsheets.
+ask the user if other types of google drive documents is desired, if so, complete the integration of spreadsheets.
+
+research and plan first

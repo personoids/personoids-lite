@@ -12,6 +12,7 @@ app.get("/logo.png", (req, res) => {
   res.sendFile(logoPath);
 });
 
+
 app.get("/avatar/:id", (req, res) => {
   const imgPath = path.resolve(`./images/${req.params.id}`);
   // resize image

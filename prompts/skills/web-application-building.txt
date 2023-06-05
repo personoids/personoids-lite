@@ -24,3 +24,7 @@ testing:
     - implement end2end tests
     - implement unit testing
 path: /usr/workspace/(project-name)
+
+---
+
+research and plan

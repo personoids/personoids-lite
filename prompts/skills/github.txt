@@ -21,7 +21,7 @@ Issue Management: The plugin integration should be able to create, read, update,
 
 Pull Request Management: The plugin integration should be able to create, read, update, and merge pull requests. It should also be able to solve bugs and add new features in a repo, and create pull requests for these changes.
     - create a method howToFixABug that return the instructions as a static string
-    - create a method howToFixABug that return the instructions as a static string
+    - create a method howToCreateEnhancement that return the instructions as a static string
     - add a method to interact with Pull Pequests through the GitHub API
 
 Code Review: The plugin integration should be able to comment on pull requests for code review.
@@ -29,6 +29,8 @@ Code Review: The plugin integration should be able to comment on pull requests f
     - create a method howToCodeReview that return the instructions as a static string
 
 Search: The plugin integration should be search for GitHub by the methods that GitHub API supports.
+
+Clone method: wrap a git clone shell command, clone to path under /usr/workspace
 
 -----
 

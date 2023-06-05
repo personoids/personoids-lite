@@ -7,3 +7,4 @@ env.sh
 env.bat
 .env
 root
+logs/**

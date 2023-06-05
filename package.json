@@ -26,12 +26,14 @@
     "langchain": "^0.0.81",
     "mammoth": "^1.6.0",
     "microformat-node": "^2.0.1",
+    "morgan": "^1.10.0",
     "openai": "^3.2.1",
     "openapi-request-coercer": "^12.1.1",
     "pdf-parse": "^1.1.1",
     "puppeteer": "^19.11.1",
     "sharp": "^0.32.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "winston": "^3.9.0"
   },
   "type": "module"
 }
