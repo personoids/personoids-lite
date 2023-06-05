@@ -1,0 +1,19 @@
+create a single method called howtoBuildAWebsite that only returns an 'instructions' field that guides how to build a statie web site (for a company, project, organization):
+
+the instructions should include:
+preliminery steps:
+    - understanding the dependencies for the specific project
+    - searching for a proper biolerblate, seed or starting point for the specific project
+    - setup the dev-env
+building the app:
+    - list the required pages
+    - tweak the design of the app
+    - create graphical assets
+    - populate content and graphical assets
+deployment aspects:
+    - setup the domain
+    - setup the testing env
+    - setup staging site
+    - setup the CI/CD    
+    - test and deploy
+path: /usr/workspace/(project-name)

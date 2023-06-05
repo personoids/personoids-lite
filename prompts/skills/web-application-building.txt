@@ -1,0 +1,26 @@
+create a single method called howtoBuildAWebApp that only returns an 'instructions' field that guides how to build a full stack web app / service:
+
+the instructions should include:
+requirements and specs:
+    - list the user stories
+list the different components (frontend, backend service, mobile app, database, library)
+preliminery steps:
+    - understanding the dependencies for each component
+    - searching for a proper biolerblate, seed or starting point for each component or for the entire project
+    - setup the dev-env for each component or for the entire project
+for frontends components:
+    - list the required pages and choose a seed
+    - tweak the design of the app
+    - create graphical assets
+    - populate content and graphical assets       
+deployment aspects:
+    - setup the domain
+    - setup the testing env
+    - setup staging
+    - setup the CI/CD    
+    - test and deploy
+testing:
+    - create a test plan
+    - implement end2end tests
+    - implement unit testing
+path: /usr/workspace/(project-name)

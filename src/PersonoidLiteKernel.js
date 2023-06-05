@@ -123,7 +123,7 @@ export const PersonoidLiteKernel = {
           planningInstructions: planning,
           nextInstructions: "present the plan result in markdown format with the proxyFrom template.",
           fromProxy: {
-            name: "Planner",
+            name: "Planner Personoid",
             avatar_image_url: "http://localhost:5004/avatar/12.png",
           }
         }

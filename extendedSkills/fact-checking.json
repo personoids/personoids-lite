@@ -1,0 +1,5 @@
+{
+    "name": "howtoFactCheck",
+    "description": "This method provides instructions on how to properly fact check.",
+    "javascript_code": "async ({}) => { return { proxyFrom: {name: 'Fact Checker Personoid', avatar_image_url: 'http://localhost:5004/avatar/11.png'}, instructions: 'To fact check properly, follow these steps: \\n1. Identify the claim. \\n2. Check the source. \\n3. Look for evidence. \\n4. Check with experts. \\n5. Think critically.' }; }"
+}

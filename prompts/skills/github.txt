@@ -1,0 +1,35 @@
+Authentication: The plugin integration needs to authenticate with GitHub using OAuth or a personal access token. It should also be able to create and configure SSH-based credentials in the shell to be able to authenticate for basic git commands.
+    * for the ssh auth:
+        - ask the user their email.
+        - then generate ssh key using: echo \"\n\" | ssh-keygen -t rsa -b 4096 -C \"users@email.com\"
+        - copy the file with a shell command to /usr/workspace. present in in markdown format and ask the user to submit it in https://github.com/settings/keys
+        - configure git through ssh to use this file to authenticate
+    * for the API access
+        - guide the user on how to create a auth token
+        - store this token in the assistant_info collection
+GitHub API support methods:
+    - should accept github_access_token parameter
+    - use the octokit npm package
+    - limit the results with maxBytes and offset (by pages) and support pagination    
+
+Repository Management: The plugin integration should be able to manage repositories.
+    - create a single method to create, read, update, and delete repositories.
+
+Issue Management: The plugin integration should be able to create, read, update, and close issues. It should also be able to solve troubleshooting and support issues of a project (repo).
+    - create a method howToSolveIssues that return the instructions as a static string
+    - add a method to interact with Issues through the GitHub API
+
+Pull Request Management: The plugin integration should be able to create, read, update, and merge pull requests. It should also be able to solve bugs and add new features in a repo, and create pull requests for these changes.
+    - create a method howToFixABug that return the instructions as a static string
+    - create a method howToFixABug that return the instructions as a static string
+    - add a method to interact with Pull Pequests through the GitHub API
+
+Code Review: The plugin integration should be able to comment on pull requests for code review.
+    - add a method for adding a comment on pull requests.
+    - create a method howToCodeReview that return the instructions as a static string
+
+Search: The plugin integration should be search for GitHub by the methods that GitHub API supports.
+
+-----
+
+plan and research first

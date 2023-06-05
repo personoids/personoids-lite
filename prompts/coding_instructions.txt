@@ -7,3 +7,4 @@
   5.2. similarity_query(match_string) - returns the most similar documents to the match_document (which is a string)
   5.3. structured_query(query) - returns the most similar documents to the query (which is a structured query with the operators: $eq $ne $gt $gte $lt $lte). if query is undefined returns all documents
 6. you can use a different collection by calling: const _inMemoryDocumentStore = await inMemoryDocumentStores.getOrCreateStore(name)
+7. the parameters for the methods must be strings only, not objects or numbers, if you must, parse them inside the function with parseFloat, parseInt or JSON.parse()

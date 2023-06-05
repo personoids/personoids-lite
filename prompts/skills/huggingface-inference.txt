@@ -1,0 +1,5 @@
+research and plan an integration with huggingface's inference API
+
+- support authentication using a huggingface access token
+- allow running hosted inference of models on huggingface
+- search and create a catalog of huggingface models that you can use for various aspects on demand. text2image (stable diffusion 1.5) , text2speech, etc.
