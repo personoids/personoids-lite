@@ -1,0 +1,5 @@
+Sending Messages: The plugin will be able to send messages to a specific channel or user.
+Reading Messages: The plugin will be able to read and fetch up to 5 last messages from a specific channel or user.
+Listing Channels: The plugin will be able to list channels.
+
+plan and research first.

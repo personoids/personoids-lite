@@ -1,0 +1,5 @@
+clone https://github.com/scrapehero-code/amazon-scraper to /usr/workspace/
+read how to use it
+create a method that encapsulates its functionality. that function should execute a python script and return the results.
+
+plan and research first
