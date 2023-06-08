@@ -32,7 +32,7 @@ Welcome to the era of Promptware, a revolutionary software paradigm brought to l
 
 ## Examples
 
-[Updating examples documant](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/EXAMPLES.md)
+[Examples](/EXAMPLES.md)
 
 ## Requirements
 
