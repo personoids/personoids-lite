@@ -1,0 +1,24 @@
+[{
+    "name": "huggingfaceInference",
+    "description": "This method authenticates with Huggingface's API using a User Access Token, runs inference on a specified model, and writes the results to a file. use full path for output_file.",
+    "request_fields": [
+      "model",
+      "input",
+      "output_file"
+    ],
+    "imports": [
+      "axios",
+      "fs"
+    ],
+    "javascript_code": "async ({ model, input, output_file, importsObject }) => { const HUGGINGFACEHUB_API_KEY = 'token'; const url = `https://api-inference.huggingface.co/models/${model}`; const headers = { 'Authorization': 'Bearer ' + HUGGINGFACEHUB_API_KEY }; const data = { 'inputs': input }; try { const response = await importsObject.axios.post(url, data, { headers: headers, responseType: 'arraybuffer' }); const buffer = Buffer.from(response.data, 'binary'); await importsObject.fs.promises.writeFile(output_file, buffer); return output_file; } catch (error) { console.error(error); return null; } }",
+  },
+  {
+    "name": "addModelToCatalog",
+    "description": "This method adds a model to the Huggingface model catalog.",
+    "request_fields": [
+      "model_name",
+      "description",
+      "use_cases"
+    ],
+    "javascript_code": "async ({ model_name, description, use_cases, importsObject }) => { const model = { 'name': model_name, 'description': description, 'use_cases': use_cases }; const collection = 'huggingface_model_catalog'; const id = model_name; const document_json = JSON.stringify(model); const result = await importsObject.storeDocument({ collection, id, document_json }); return result; }"
+  }]
