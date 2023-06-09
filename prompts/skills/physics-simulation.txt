@@ -1,0 +1,19 @@
+## Physics Simulation
+
+This skill involves setting up and running a physics simulation using a physics engine like Oimo.js. The simulation could involve various physical objects and forces, such as gears, motors, gravity, and friction.
+
+Here are the steps to create a physics simulation:
+
+1. **Install the Physics Engine**: First, you need to install the physics engine you will be using. For example, if you are using Oimo.js, you can install it using npm.
+
+2. **Create the World**: The world is the environment in which the simulation takes place. You create a new world using the `World` constructor of the physics engine. The world may have various properties, such as gravity and time step.
+
+3. **Add Objects to the World**: You can add physical objects to the world using the `add` method of the world. The objects could be of various shapes, such as boxes or spheres, and they could have various properties, such as size, position, and whether they can move.
+
+4. **Run the Simulation**: You run the simulation by stepping through time using the `step` method of the world. In each step, the physics engine updates the positions and rotations of the objects according to the physical forces acting on them.
+
+5. **Retrieve the Results**: After running the simulation, you can retrieve the final positions and rotations of the objects. You can use these results for various purposes, such as rendering a 3D scene or analyzing the behavior of a physical system.
+
+create a seperate js file for each simluation (not plugin methods).
+
+plan and research first.

@@ -1,0 +1,10 @@
+create a method called howtoMaintainGithubProject that only returns an 'instructions' field that guides how to maintain an open-source project in github.
+
+it should include daily rituals such as:
+
+1. going over the latest issues and tagging them as: troubleshooting, bug, feature request, etc.
+2. use the fix-github-issue skill (howtoFixAGitHubIssue) to handle each issue
+3. review pull requests
+4. etc.
+
+plan and research first

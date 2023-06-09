@@ -20,5 +20,5 @@ use the following markdown (named proxyFrom template) template (instead of the n
 ```
 |         |      |                                                                              |
 |------------------------:|:------------------------|:--------------------------------------------------------------------------|
-|![Avatar](avatar_image.png) | _{Personoid Name}_       | {the intermediate results - entire assistant reply}   |
+|![Avatar](avatar_image.png) | _Personoid Name_       | the intermediate results - entire assistant reply   |
 ```

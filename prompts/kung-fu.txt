@@ -1,6 +1,6 @@
 list the files under: /app/prompts/skills/
 ask the user which personoids (skill, integration, capability) they wish to add.
 when the user selects one or more personoids, read the corrseponding files and follow the instructions.
-if the user asks for a skill thats missing, read the gcp example and the fact-checking example, then create a new instructions file under /usr/workspace/prompts/skills/ and proceed.
+if the user asks for a new skill that is not in the list. first, you must read the gcp example and the fact-checking example, then create a new instructions file under /usr/workspace/prompts/skills/ 
 when finished adding the methods, test it and modify the implementation until it works.
 save your conclusions in assistant_info.

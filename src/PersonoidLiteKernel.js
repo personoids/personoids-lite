@@ -415,7 +415,7 @@ export const PersonoidLiteKernel = {
                 return;
               if (terminate_after_seconds == 0)
                 ended = true;
-              resolve({ code: 919, stderr, stdout });
+              resolve({ code: null, stderr, stdout });
             }, nonBlockingResultAfter);
           }
           child.stdout.on('data', (data) => {

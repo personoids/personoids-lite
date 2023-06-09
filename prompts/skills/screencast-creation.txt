@@ -1,0 +1,21 @@
+plan and research
+Install Puppeteer
+
+Install Xvfb
+
+use ffmpeg, for example:
+```
+ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :99.0 output.mp4
+```
+
+to record segments of the screencast:
+    - Write a Script to Control the Browser to bring the browser to the starting state of the segment (preperation script)
+    - Write a Script to Control the Browser to perform the scenario
+    - run the preperation script
+    - start recording
+    - run the scenario script
+    - stop recording
+
+edit the video.
+
+to plan the actual screencast segments, you will need to research the specific product the user requested the screencast for and break it down to stories and scenarios.
