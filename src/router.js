@@ -235,9 +235,9 @@ async function createRouter(
                     }
                     return res.status(200).json(result);
                 }
-                else {
-                    if(result.length > 16000){
-                        throw new Error(`response is too long, ${resString.length} bytes, please modify the function to support pagination using maxBytes and offset`);
+                else {                    
+                    if(result.length > 16000 && !method.noLimit){
+                        throw new Error(`response is too long, ${result.length} bytes, please modify the function to support pagination using maxBytes and offset`);
                     }
                     return res.status(200).send(result);
                 }

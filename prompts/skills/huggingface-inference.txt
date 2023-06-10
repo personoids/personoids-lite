@@ -1,9 +1,28 @@
 research and plan an integration with huggingface's inference API
 
 - support authentication using a huggingface access token: 
-- allow running hosted inference of models on huggingface
+- allow running hosted inference of models on huggingface using a method called: 'huggingfaceInference'
 - search and create a catalog of huggingface models that you can use for various aspects on demand. text2image (stable diffusion 1.5) , text2speech, code completion (starcoder), etc.
 - for the catalog data, use the plugin methods for storing, listing and querying for documents
+- add howToCallAIModels that only returns an 'instructions' field that instructs to use similarityQuery on the hf_models collection and how to call the hfInfer and serve the result. (http://localhost:5004/serveFile?filePath=...)
+
+read the reference methods: /app/extendedSkills/huggingface.json
 
 
-reference: /app/extendedSkills/huggingface.json
+here is a list of initial models to create a catalog for: (under the hf_models collection)
+runwayml/stable-diffusion-v1-5
+bigcode/starcoder
+Salesforce/blip-image-captioning-base
+nvidia/mit-b0
+facebook/convnext-base-224
+microsoft/resnet-50
+microsoft/layoutlmv3-base
+microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+wav2vec2-large-xlsr-53-english
+suno/bark
+tiiuae/falcon-7b-instruct
+tiiuae/falcon-40b-instruct
+DancingIguana/music-generation
+jonatasgrosman/wav2vec2-large-xlsr-53-english
+
+read about these models first.

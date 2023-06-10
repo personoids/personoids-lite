@@ -320,6 +320,8 @@ export const PersonoidLiteKernel = {
         },
         cwd: {
           type: 'string',
+          required: false,
+          default: '/usr/workspace',
         },
         env_string: {
           type: 'string',
@@ -356,6 +358,7 @@ export const PersonoidLiteKernel = {
       },
       response: {},
       handler: async ({ command, cwd, env_string, blocking, terminate_after_seconds, maxBytes, offset, bootstrap_auth_token }) => {
+        cwd = cwd || '/usr/workspace';
         validateToken(bootstrap_auth_token);
         maxBytes = maxBytes || DEFAULT_MAX_BYTES;
         offset = offset || 0;
@@ -1226,7 +1229,7 @@ export const PersonoidLiteKernel = {
       }
     },
     "serveFile": {
-      description: 'never call this directly. only as part of links that you provide to the user - serves a file from the file system.',
+      description: 'never call this directly. only as part of links that you provide to the user - serves a file from the file system. in the format http://localhost:5004/serveFile?filePath=/path/to/file',
       request: {
         filePath: {
           name: 'filePath',
@@ -1235,6 +1238,7 @@ export const PersonoidLiteKernel = {
         },
       },
       method: "get",
+      noLimit: true,
       contentType: "application/octet-stream",
       handler: async ({ filePath }) => {
         const contents  = fs.readFileSync(filePath);
