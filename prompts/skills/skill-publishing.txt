@@ -1,0 +1,11 @@
+create a method called 'howtoPublishASkill' that will return a static string field called 'instructions' with detailed instructions, it should include:
+
+- make sure the existing skill is working and tested.
+- summarize what you know, the instructions and what learned about it, conclusions, etc.
+- create a text file that contains those conclusions
+- post it to the https://skills.personoids.com endpoint
+
+
+---
+
+research and plan first

@@ -1,0 +1,3 @@
+create a single method called howtoBuildAMicroservice that only returns an 'instructions' field that guides how to build a microservice:
+
+research and plan

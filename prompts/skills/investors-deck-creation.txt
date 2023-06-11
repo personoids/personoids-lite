@@ -1,0 +1,30 @@
+create a method called 'howtoCreateAnInvestorsDeck' that will return a static string field called 'instructions' on how to build an investor's deck.
+it should be generic and include:
+
+Understand the Company: It's crucial to have a deep understanding of the company, its vision, mission, product, and team. This information forms the backbone of the investor deck.
+
+Identify the Problem and Solution: Clearly articulate the problem that the company is solving and how it is doing so. This should be presented in a way that is easy to understand and compelling.
+
+Highlight the Market Opportunity: Investors want to know the potential of the market that the company is targeting. It's important to present this information in a clear and convincing manner.
+
+Present the Product and Technology: The investor deck should include a detailed description of the product and the technology behind it. This helps investors understand what makes the company unique and why its solution is better than others in the market.
+
+Outline the Business Model and Strategy: The deck should clearly outline the company's business model and go-to-market strategy. This gives investors an idea of how the company plans to generate revenue and achieve growth.
+
+Introduce the Team: The deck should introduce the team behind the company. It should highlight their skills, experience, and what they bring to the table.
+
+Discuss Community and Partnerships: If the company is building a community or has key partnerships, this should be included in the deck. This shows investors that the company is not working in isolation and has support from other entities.
+
+Provide Financial Projections and Ask: The deck should include financial projections and the investment ask. This gives investors an idea of the company's financial health and how much funding it is seeking.
+
+Use Catchy Phrases: The deck should include catchy phrases that encapsulate the company's mission and vision. This makes the deck more engaging and memorable.
+
+Format and Presentation: The deck should be well-organized and visually appealing. It should be easy to read and understand. The use of bullet points can help present information in a clear and concise manner.
+
+Personal Preferences: The deck should reflect the personal preferences of the person presenting it. For example, some people prefer a deck with bullet points, while others prefer a more narrative style. It's important to tailor the deck to the presenter's style and preferences.
+
+
+
+---
+
+research and plan first
