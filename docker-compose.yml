@@ -32,6 +32,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
       - CHROMA_SERVER_URL=http://chroma:8000
+      - BROWSE_MODE=${BROWSE_MODE}
     ports:
       - 5004:5004
       - 5001:5001

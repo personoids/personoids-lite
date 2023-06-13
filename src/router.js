@@ -5,6 +5,7 @@ import { createPaths } from 'express-openapi-middleware';
 import fs from 'fs';
 
 
+var  browseMode = process.env.BROWSE_MODE || false;
 function apiOperation(operation) {
     const middleware = function (req, res, next) {
         req.apiOperation = operation;
@@ -15,6 +16,24 @@ function apiOperation(operation) {
     middleware.apiOperation = operation;
     return middleware;
 }
+function jsonToTable(json) {
+    if(typeof json !== 'object') {
+        return json;
+    }
+
+    // as html formatted table
+    const keys = Object.keys(json);
+    const values = Object.values(json);
+    const table = `<table>
+    <tr>
+    <th>key</th>
+    <th>value</th>
+    </tr>
+    ${keys.map((key, i) => `<tr><td>${key}</td><td>${jsonToTable(values[i])}</td></tr>`).join('\n')}
+    </table>`;
+    return table;
+}
+        
 async function createRouter(
     {
         contact_email = '', description_for_model = '', description_for_human = '', auth = '', name_for_human = '', name_for_model = '', logo_url = '', legal_info_url = '', has_user_authentication = false, title = '', version = '1.0', plugin_host = '', methods = {}
@@ -47,6 +66,12 @@ async function createRouter(
         });
 
         const resString = JSON.stringify(pluginManifest, null, 2);
+        // if(browseMode) {
+        //     const html = '<html><body><pre>' + resString + '</pre></body></html>';
+        //     res.setHeader('Content-Type', 'text/html;charset=UTF-8');
+        //     res.send(html);
+        //     return;
+        // }
         res.setHeader('Content-Type', 'application/json;charset=UTF-8');
         res.send(resString);
     });
@@ -67,6 +92,13 @@ async function createRouter(
             ],
             paths
         };
+        // if(browseMode) {
+        //     const html = '<html><body><pre>' + JSON.stringify(openapi, null, 2) + '</pre></body></html>';
+        //     res.setHeader('Content-Type', 'text/html;charset=UTF-8');
+        //     res.send(html);
+        //     return;
+        // }
+
 
         res.setHeader('Content-Type', 'application/json;charset=UTF-8');
         res.send(JSON.stringify(openapi, null, 2));
@@ -80,6 +112,9 @@ async function createRouter(
         imports = imports || [];
         http_method = http_method || 'post';
         http_method = http_method.toLowerCase();
+        if(browseMode) {
+            http_method = 'get';
+        }
         tags = tags || [];
         summary = summary || '';
         request = request || {};
@@ -120,12 +155,12 @@ async function createRouter(
                 const param = request[paramName];
                 return {
                     in: 'query',
-                    name: param.name,
+                    name: param.name || paramName,
                     description: param.description,
                     required: (param.required === undefined) ? true : param.required,
                     schema: {
-                        type: param.type || 'string',
-                        default: param.default,
+                        type: 'string',
+                        default: param.default ? param.default.toString() : undefined
                     }
                 }
             });
@@ -218,7 +253,33 @@ async function createRouter(
                         importsObject[importName] = importsObject[importName].default;
                     }
                 }
-                
+                // handle arrays and objects
+                if(http_method === 'get'){
+                    for (var i = 0; i < params .length; i++) {
+                        Object.keys(request).map((paramName) => {
+                            const param = request[paramName];
+                            if(param.type === 'array'){
+                                const value = req.query[paramName];
+                                if(value && typeof value === 'string'){
+                                    req.query[paramName] = value.split(',');
+                                }
+                            }
+                            else if(param.type === 'object'){
+                                const value = req.query[paramName];
+                                if(value && typeof value === 'string'){
+                                    req.query[paramName] = JSON.parse(value);
+                                }
+                            } else if (param.type === 'number') {
+                                const value = req.query[paramName];
+                                if (value && typeof value === 'string') {
+                                    req.query[paramName] = Number(value);
+                                }
+                            }
+                        });
+
+                                    
+                    }
+                }
                 let arg = http_method === 'get' ? req.query : req.body;
                 if (http_method === 'post' && req.body && req.body.request) {
                     arg = req.body.request;
@@ -233,13 +294,24 @@ async function createRouter(
                     if(resString.length > 16000){
                         throw new Error(`response is too long, ${resString.length} bytes, please modify the function to support pagination using maxBytes and offset`);
                     }
-                    return res.status(200).json(result);
+                    if(browseMode){
+                        res.setHeader('Content-Type', 'text/html;charset=UTF-8');
+                        const jsonAsTable = jsonToTable(result);
+                        res.send(`<html><body>${jsonAsTable}</body></html>`);
+                    }
+                    else
+                        return res.status(200).json(result);
                 }
                 else {                    
                     if(result.length > 16000 && !method.noLimit){
                         throw new Error(`response is too long, ${result.length} bytes, please modify the function to support pagination using maxBytes and offset`);
+                    }   
+                    if(browseMode){                        
+                        res.setHeader('Content-Type', 'text/html;charset=UTF-8');
+                        res.send(`<html><body><pre>${result}</pre></body></html>`);
                     }
-                    return res.status(200).send(result);
+                    else
+                        return res.status(200).send(result);
                 }
             }
             catch (error) {

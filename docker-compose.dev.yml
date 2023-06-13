@@ -31,6 +31,7 @@ services:
       - SERPAPI_API_KEY=${SERPAPI_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+      - BROWSE_MODE=${BROWSE_MODE}
       - CHROMA_SERVER_URL=http://chroma:8000
     ports:
       - 5004:5004

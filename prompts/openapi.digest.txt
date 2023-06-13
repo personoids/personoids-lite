@@ -1,0 +1,165 @@
+// A plugin (Personoids) that plans, researches, builds, tests, troubleshoots and helps with anything:
+// - extend the functionality of the plugin, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize web requests.
+// - create new methods on this plugin: if there is something you are unable to do already, create a method just before you call it.
+// call the "plan" method before you start a task. Call it method whenever you need to plan anything, or break down a big task into smaller tasks.
+namespace DoAnythingPlugin {
+
+type learn = (_: {
+// The bootstrap auth token. call bootstrapPlugin to get one.
+bootstrap_auth_token: string,
+}) => any;
+
+type plan = (_: {
+// The bootstrap auth token. call bootstrapPlugin to get one.
+bootstrap_auth_token: string,
+}) => any;
+
+type fileSystemOperation = (_: {
+// The operation to perform
+operation: string,
+// The path to perform the operation on
+path: string,
+// The data to write to the file
+data?: string,
+// The encoding to use when reading or writing the file
+encoding?: string,
+// If true, performs the operation recursively
+recursive?: string,
+// The maximum number of bytes to read
+maxBytes?: string,
+// The offset to start reading from
+offset?: string,
+// The bootstrap auth token. call bootstrapPlugin to get one.
+bootstrap_auth_token: string,
+}) => any;
+
+type shellExecute = (_: {
+command: string,
+cwd?: string,
+// A string of environment variables to set, separated by newlines. For example: VAR1=VALUE1
+// VAR2=VALUE2
+env_string?: string,
+blocking: string,
+terminate_after_seconds?: string,
+// The maximum number of bytes to return from stdout and stderr
+maxBytes?: string,
+// The offset to start reading from
+offset?: string,
+// The bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type createOrUpdatePluginMethod = (_: {
+name: string,
+// instruction for when to use this method, and how to use it.
+description?: string,
+// The parameters for this method (all of type string)
+request_fields?: string,
+// The imports for this method, these will be "require()" and injected
+imports?: string,
+// If true, deletes the method instead of creating it
+isDelete?: string,
+// the javacript_code should be empty.
+javascript_code?: string,
+// The bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type npm = (_: {
+name: string,
+// The bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type webSearch = (_: {
+query: string,
+// The bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type urlFetch = (_: {
+url: string,
+request_method?: string,
+request_headers?: string,
+request_body?: string,
+enableTextExtractionOnly: string,
+enableImageCaptionExtraction?: string,
+enableMicroFormatExtraction?: string,
+xPathBasedSelector?: string,
+cssBasedSelector?: string,
+pureJavascriptBasedSelectorFunction?: string,
+regexSelector?: string,
+maxBytes?: string,
+offset?: string,
+// The bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type storeDocument = (_: {
+collection: string,
+// optional
+id: string,
+document_json: string,
+}) => any;
+
+type getSingleDocument = (_: {
+collection: string,
+id: string,
+}) => any;
+
+type similarityQuery = (_: {
+collection: string,
+match_string: string,
+}) => any;
+
+type listAllDocuments = (_: {
+collection: string,
+include_fields: string,
+// bootstrap auth token
+bootstrap_auth_token: string,
+}) => any;
+
+type listCollections = () => any;
+
+type structuredQuery = (_: {
+collection: string,
+query_object_json: string,
+}) => any;
+
+type bootstrapPlugin = () => any;
+
+type resetAll = (_: {
+// must be 'user confirmed this action'
+confirmation: string,
+}) => any;
+
+type renderImageFileByTextPrompt = (_: {
+prompt: string,
+// size of the image in pixels, must be either 256, 512, or 1024
+size?: string,
+// path to the file to save the image to
+filePath: string,
+}) => any;
+
+type renderAsHtml = (_: {
+collection: string,
+html_field_name: string,
+id: string,
+}) => any;
+
+type serveFile = (_: {
+filePath: string,
+}) => any;
+
+type extractTextFromFile = (_: {
+filePath: string,
+maxBytes?: string,
+offset?: string,
+}) => any;
+
+type generatePDFFromHTML = (_: {
+inFilePath: string,
+outFilePath: string,
+}) => any;
+
+} // namespace DoAnythingPlugin

@@ -91,7 +91,7 @@ export const PersonoidLiteKernel = {
         "bootstrap_auth_token": {
           type: "string",
           name: "bootstrap_auth_token",
-          description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          // description: "The bootstrap auth token. call bootstrapPlugin to get one.",
           required: true,
         },
       },
