@@ -6,22 +6,22 @@ networks:
 
 services:
   chroma:
+    container_name: chroma
     image: personoids/chroma
-    restart: always
-    build: 
-      context: ./
-      dockerfile: Dockerfile-chroma    
+    restart: always 
     environment:
       - CHROMA_DB_IMPL=clickhouse
       - CLICKHOUSE_HOST=clickhouse
       - CLICKHOUSE_PORT=8123
-    ports:
-      - 8000:8000
+    build: 
+      context: ./
+      dockerfile: Dockerfile-chroma      
     depends_on:
       - clickhouse
     networks:
       - net
   plugin:
+    container_name: plugin
     image: personoids/plugin-lite
     restart: always 
     build: 
@@ -31,8 +31,8 @@ services:
       - SERPAPI_API_KEY=${SERPAPI_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
-      - BROWSE_MODE=${BROWSE_MODE}
       - CHROMA_SERVER_URL=http://chroma:8000
+      - BROWSE_MODE=${BROWSE_MODE}
     ports:
       - 5004:5004
       - 5001:5001
@@ -71,6 +71,58 @@ services:
       - ./config/chroma_users.xml:/etc/clickhouse-server/users.d/chroma.xml
     networks:
       - net
+  api:
+    container_name: LibreChat
+    ports:
+      - 3080:3080               # Change it to 9000:3080 to use nginx
+    depends_on:
+      - mongodb
+      - plugin
+    image: librechat                # Comment this & uncomment below to build from docker hub image
+    build:                                   # ^------
+      context: ./LibreChat/                              # ^------
+      target: node                             # ^------v
+    # image: ghcr.io/danny-avila/librechat:latest # Uncomment this & comment above to build from docker hub image
+    restart: always
+    extra_hosts: # if you are running APIs on docker you need access to, you will need to uncomment this line and next
+    - "host.docker.internal:host-gateway"
+    env_file:
+      - LibreChat/.env.default
+    environment:
+      - HOST=0.0.0.0
+      - MONGO_URI=mongodb://mongodb:27017/LibreChat
+      # - CHATGPT_REVERSE_PROXY=http://host.docker.internal:8080/api/conversation # if you are hosting your own chatgpt reverse proxy with docker
+      # - OPENAI_REVERSE_PROXY=http://host.docker.internal:8070/v1/chat/completions # if you are hosting your own chatgpt reverse proxy with docker
+      - MEILI_HOST=http://meilisearch:7700
+      - MEILI_HTTP_ADDR=meilisearch:7700
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - /app/client/node_modules
+      - ./LibreChat/api:/app/api
+      - ./LibreChat/.env.default:/app/.env
+      - /app/api/node_modules
+      - ./LibreChat/images:/app/client/public/images
+  mongodb:
+    container_name: chat-mongodb
+    ports:
+      - 27018:27017
+    image: mongo
+    restart: always
+    volumes:
+      - ./LibreChat/data-node:/data/db
+    command: mongod --noauth
+  meilisearch:
+    container_name: chat-meilisearch
+    image: getmeili/meilisearch:v1.0
+    ports:
+      - 7700:7700
+    env_file:
+      - LibreChat/.env.default
+    environment:
+      - MEILI_HOST=http://meilisearch:7700
+      - MEILI_HTTP_ADDR=meilisearch:7700
+    volumes:
+      - ./LibreChat/meili_data:/meili_data
 
 volumes:
   clickhouse_data:

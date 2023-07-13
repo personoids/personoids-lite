@@ -49,7 +49,7 @@ export default function Landing() {
                 onClick={clickHandler}
                 className="w-full rounded-md bg-gray-50 p-3 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-gray-900"
               >
-                &quot;GET learn&quot; →
+                &quot;learn a new skill&quot; →
               </button>
               <button
                 onClick={clickHandler}
