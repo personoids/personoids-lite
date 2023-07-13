@@ -5,7 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: docker-compose pull
+  - init: docker-compose build && docker-compose up
     command: echo "Set your keys and run 'docker-compose up' to start"
 
 

@@ -1,7 +1,7 @@
 // A plugin (Personoids) that plans, researches, builds, tests, troubleshoots and helps with anything:
 // - extend the functionality of the plugin, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize web requests.
 // - create new methods on this plugin: if there is something you are unable to do already, create a method just before you call it.
-// call the "plan" method before you start a task. Call it method whenever you need to plan anything, or break down a big task into smaller tasks.
+// call the "plan" method before you start a task. Call this method whenever you need to plan anything, or break down a big task into smaller tasks.
 namespace DoAnythingPlugin {
 
 type learn = (_: {

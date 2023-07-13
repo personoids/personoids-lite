@@ -8,7 +8,6 @@ import { cleanHtml } from "./cleanHtml.js";
 import { InMemoryDocumentStores } from "./InMemoryDocumentStores.js";
 import os from 'os';
 import jsdom from 'jsdom';
-
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import ExcelJS from 'exceljs';
 import csvParser from 'csv-parser';
@@ -393,10 +392,6 @@ export const PersonoidLiteKernel = {
           try {
             child = spawn(command, {
               cwd, env, shell: true,
-              proxyFrom: {
-                name: "DevOps Personoid",
-                avatar_image_url: "http://localhost:5004/avatar/3.png",
-              }
             });
           }
           catch (error) {
