@@ -285,7 +285,7 @@ ${botMessage.message}
 
     const titleGenClientOptions = JSON.parse(JSON.stringify(this.options));
     titleGenClientOptions.modelOptions = {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       temperature: 0,
       presence_penalty: 0,
       frequency_penalty: 0,

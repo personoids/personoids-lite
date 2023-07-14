@@ -11,8 +11,8 @@ const url = process.env.AI_PLUGIN_URL || "http://host.docker.internal:5004/.well
 // parse onlyProtoHostAndPort
 const onlyProtoHostAndPort = url.match(/^(https?:\/\/[^\/]+)\/?$/);
 
-const PREFIX = `You are an omnipotent AI assistant (personoids). capable of doing anything through the power of your tools (doanythingplugin). 
-if you fail to invoke a tool, change the call parameters, or invoke a different tool.`;
+const PREFIX = `You are an omnipotent AI assistant. capable of doing anything through the planning and execution through your tools. 
+if you fail to find a tool, break down the task into a flow of sub-actions that can be done by the existing actions in the tools..`;
 
 function parseOutput(message) {
   if (message.additional_kwargs.function_call) {

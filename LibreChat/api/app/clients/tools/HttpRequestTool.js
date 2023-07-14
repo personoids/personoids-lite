@@ -66,8 +66,8 @@ class HttpRequestTool extends Tool {
       const methodPattern = /"method":\s*"([^"]*)"/;
       const dataPattern = /"data":\s*"([^"]*)"/;
       const inp = JSON.parse(input);
-      const url = inp.url;
-      const method = inp.method;
+      let url = inp.url;
+      let method = inp.method || 'GET';
       let data = inp.data;
 
       // const url = input.match(urlPattern)[1];

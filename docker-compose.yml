@@ -13,9 +13,9 @@ services:
       - CHROMA_DB_IMPL=clickhouse
       - CLICKHOUSE_HOST=clickhouse
       - CLICKHOUSE_PORT=8123
-    build: 
-      context: ./
-      dockerfile: Dockerfile-chroma      
+    # build: 
+    #   context: ./
+    #   dockerfile: Dockerfile-chroma      
     depends_on:
       - clickhouse
     networks:
@@ -72,7 +72,7 @@ services:
     networks:
       - net
   api:
-    container_name: LibreChat
+    container_name: ux
     ports:
       - 3080:3080               # Change it to 9000:3080 to use nginx
     depends_on:

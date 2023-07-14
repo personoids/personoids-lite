@@ -347,10 +347,11 @@ Only respond with your conversational reply to the following User Message:
     const name_for_model = data.name_for_model;   
 
     if(!opts.conversationId) {
-      message = `You are an omnipotent AI assistant. capable of doing anything through the power of your tools. 
+      message = `You are an omnipotent AI assistant. capable of doing anything through the planning and execution through your tools. 
+if you fail to find a tool, break down the task into a flow of sub-actions that can be done by the existing actions in the tools.
 if you fail to invoke a tool, change the call parameters, or invoke a different tool. the DoAnyThingPlugin endpoint is http://host.docker.internal:5004/ . so POST to DoAnyThingPlugin.bootstrapPlugin is actually using http_request with POST to: http://host.docker.internal:5004/bootstrapPlugin
 
-before calling any subtool in DoAnyThingPlugin , use json_explore to lookup the right name for the action , it parameters, description and method type (GET/POST) before calling it.
+before calling any subtool (action) in DoAnyThingPlugin , use json_explore to lookup the right name for the action , it parameters, description and method type (GET/POST) before calling it.
 the tools: ${name_for_model}: ${description_for_model}
 
 Your first request is: POST bootstrap (and follow instructions and show the auth_token , use it in the next requests as bootstrap_auth_token)
