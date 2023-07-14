@@ -206,7 +206,7 @@ class AIPluginTool extends Tool {
     const shortApiSpec = extractShortVersion(apiUrlJson);
     return new AIPluginTool({
       name: aiPluginJson.name_for_model.toLowerCase(),
-      description: `A \`tool\` to learn the API documentation for ${aiPluginJson.name_for_model.toLowerCase()}, after which you can use 'http_request' to make the actual API call. Short description of how to use the API's results: ${aiPluginJson.description_for_model})`,
+      description: `A \`tool\` to learn the API documentation for ${aiPluginJson.name_for_model.toLowerCase()}, after which you can use 'http_request' to make the actual API call (never use the 'http_request' tool for anything other than interacting with the ${aiPluginJson.name_for_model.toLowerCase()}). Short description of how to use the API's results: ${aiPluginJson.description_for_model})`,
       apiSpec: `
 As an AI, your task is to identify the operationId of the relevant API path based on the condensed OpenAPI specifications provided.
 
