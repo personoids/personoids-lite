@@ -84,7 +84,7 @@ export const PersonoidLiteKernel = {
   methods: {
     "learn": {
       tags: ['Learning', "Personoid", "Skill"],
-      method: "GET",
+      method: "POST",
       description: "Call this method whenever the user asks your to create a new personoid or learn a new skill or integration.",
       request: {
         "bootstrap_auth_token": {
@@ -104,7 +104,7 @@ export const PersonoidLiteKernel = {
       }
     },
     "plan": {
-      method: "GET",
+      method: "POST",
       description: "Call this method whenever you need to plan anything, or break down a big task into smaller tasks.",
       request: {
         "bootstrap_auth_token": {
