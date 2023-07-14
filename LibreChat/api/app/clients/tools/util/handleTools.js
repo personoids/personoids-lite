@@ -121,19 +121,19 @@ const loadTools = async ({ user, model, functions = null, tools = [], options = 
     plugins: async () => {
       // request to http://host.docker.internal:5004/.well-known/ai-plugin.json
       const url = process.env.AI_PLUGIN_URL || "http://host.docker.internal:5004/.well-known/ai-plugin.json";
-      const response = await fetch(url);
-      const data = await response.json();
-      // get manifest
-      const manifestUrl = data.api.url;
-      const manifestResponse = await fetch(manifestUrl);
-      const manifestData = await manifestResponse.json();
-      const description_for_model = data.description_for_model;
-      const name_for_model = data.name_for_model;           
-      const headers = {
-        // "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      };
-      const toolkit = new OpenApiToolkit(new JsonSpec(manifestData), model, headers);
+      // const response = await fetch(url);
+      // const data = await response.json();
+      // // get manifest
+      // const manifestUrl = data.api.url;
+      // const manifestResponse = await fetch(manifestUrl);
+      // const manifestData = await manifestResponse.json();
+      // const description_for_model = data.description_for_model;
+      // const name_for_model = data.name_for_model;           
+      // const headers = {
+      //   // "Content-Type": "application/json",
+      //   // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      // };
+      // const toolkit = new OpenApiToolkit(new JsonSpec(manifestData), model, headers);
       // const executor = createOpenApiAgent(model, toolkit);
 
       // class tl extends Tool{
@@ -148,8 +148,8 @@ const loadTools = async ({ user, model, functions = null, tools = [], options = 
       //     return await this.executor.call(...args);
       //   }
       // }
-
-      return [toolkit.tools[2],new HttpRequestTool()];
+      const tool = await AIPluginTool.fromPluginUrl(url, model);
+      return [tool,new HttpRequestTool()];
     },
   };
 

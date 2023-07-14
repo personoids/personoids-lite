@@ -64,7 +64,7 @@ function extractShortVersion(openapiSpec) {
       shortApiSpec.paths[path] = {};
       for (let method in fullApiSpec.paths[path]) {
         shortApiSpec.paths[path][method] = {
-          summary: fullApiSpec.paths[path][method].summary,
+          summary: fullApiSpec.paths[path][method].summary || fullApiSpec.paths[path][method].description,
           operationId: fullApiSpec.paths[path][method].operationId,
           parameters: fullApiSpec.paths[path][method].parameters?.map((parameter) => ({
             name: parameter.name,
