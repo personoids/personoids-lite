@@ -55,18 +55,20 @@ class HttpRequestTool extends Tool {
     this.headers = headers;
     this.name = 'http_request';
     this.maxOutputLength = maxOutputLength;
-    this.description = `Executes HTTP methods (GET, POST, PUT, DELETE, etc.). The input must be a json with an input field object with three keys: "url", "method", and "data". Even for GET or DELETE, include "data" key as an empty string. "method" is the HTTP method, and "url" is the desired endpoint. If POST or PUT, "data" should contain a stringified JSON representing the body to send. Only one url per use. include the query string in the url for GET requests.`;
+    this.description = `Executes HTTP methods (GET, POST, PUT, DELETE, etc.). The input must be a json string with an input field object with three keys: "url", "method", and "data". Even for GET or DELETE, include "data" key as an empty string. "method" is the HTTP method, and "url" is the desired endpoint. If POST or PUT, "data" should contain a stringified JSON representing the body to send. Only one url per use. include the query string in the url for GET requests.`;
   }
 
   async _call(input) {
     try {
       if(!input)
-        throw new Error('No input field provided in the json. The input must be a json with an input field object with three keys: "url", "method", and "data". Even for GET or DELETE, include "data" key as an empty string. "method" is the HTTP method, and "url" is the desired endpoint. If POST or PUT, "data" should contain a stringified JSON representing the body to send.');
+        throw new Error('No input field provided in the json. The input must be a json string with an input field object with three keys: "url", "method", and "data". Even for GET or DELETE, include "data" key as an empty string. "method" is the HTTP method, and "url" is the desired endpoint. If POST or PUT, "data" should contain a stringified JSON representing the body to send.');
       const urlPattern = /"url":\s*"([^"]*)"/;
       const methodPattern = /"method":\s*"([^"]*)"/;
       const dataPattern = /"data":\s*"([^"]*)"/;
       const inp = JSON.parse(input);
       let url = inp.url;
+      if(!url.startsWith('http://host.docker.internal'))
+        throw new Error('The url must start with http://host.docker.internal . you can only interact with the plugin through this tool');
       let method = inp.method || 'GET';
       let data = inp.data;
 
