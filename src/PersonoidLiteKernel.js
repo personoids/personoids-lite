@@ -1158,19 +1158,20 @@ export const PersonoidLiteKernel = {
         },
       },
       response: {},
-      handler: async ({ prompt, size, num_images }) => {
+      handler: async ({ prompt, size, filePath}) => {
         size = size || 512;
         try {
           const response = await openai.createImage({
             prompt,
-            n: num_images || 1,
+            n: 1,
             size: `${size}x${size}`
           });
           
           const imageUrl = response.data.data[0].url;
           // fetch the image and save to disk
           const response2 = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-          const buffer = Buffer.from(response2.data, 'binary');
+          const data = response2.data;
+          const buffer = Buffer.from(data, 'binary');
           fs.writeFileSync(filePath, buffer);
 
 
@@ -1185,11 +1186,12 @@ export const PersonoidLiteKernel = {
           };
         }
         catch (e) {
+          console.log("error generating image",e);
           const response = e.response;
           if (response && response.data && response.data.error) {
-            return { error: response.data.error };
+            return { error: response.data.error.toString() };
           }
-          return { error: e };
+          return { error: e.toString() };
         }
       }
     },
