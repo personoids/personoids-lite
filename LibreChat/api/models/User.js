@@ -77,7 +77,7 @@ const userSchema = mongoose.Schema(
     },
     plugins: {
       type: Array,
-      default: []
+      default: ["plugins"]
     },
     refreshToken: {
       type: [Session]
