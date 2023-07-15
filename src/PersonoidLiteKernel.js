@@ -667,15 +667,24 @@ export const PersonoidLiteKernel = {
           type: 'string',
           description: 'The bootstrap auth token',
           required: true,
+        },
+        result_limit: {
+          type: 'number',
+          description: 'The number of results to return',
+          default: 3,
+        },
+        result_offset: {
+          type: 'number',
+          description: 'The offset of the results to return',
+          default: 0,
         }
-
       },
       response: {
         webPages: {
           type: 'object',
         },
       },
-      handler: async ({ query, bootstrap_auth_token }) => {
+      handler: async ({ query, bootstrap_auth_token, result_limit, result_offset }) => {
         validateToken(bootstrap_auth_token);
         await selfImplement();
         // SERP API
@@ -684,8 +693,22 @@ export const PersonoidLiteKernel = {
         }
         const serpAPIUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&hl=en&gl=us&api_key=${serpAPIKey}`;
         const response = await axios.get(serpAPIUrl);
+
+        const webPages = response.data.organic_results.map((result) => {
+          return {
+            title: result.title,
+            link: link,
+            snippet: result.snippet,
+          }
+        });
+        if(result_offset >= webPages.length)
+          throw new Error("result_offset is too large");
+        
+        const subset = webPages.slice(result_offset, result_offset + result_limit);
         return {
-          webPages: response.data.organic_results,
+          webPages: subset,
+          results_count: webPages.length,
+          offset: result_offset,
           nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
           proxyFrom: {
             name: "Researcher Personoid",

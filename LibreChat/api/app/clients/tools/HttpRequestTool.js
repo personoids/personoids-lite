@@ -68,7 +68,7 @@ class HttpRequestTool extends Tool {
       const inp = JSON.parse(input);
       let url = inp.url;
       if(!url.startsWith('http://host.docker.internal'))
-        throw new Error('The url must start with http://host.docker.internal . you can only interact with the plugin through this tool');
+        throw new Error('The url must start with http://host.docker.internal . you can only interact with the plugin through this tool. for other urls, use the urlFetch endpoint of the doanythingplugin.');
       let method = inp.method || 'GET';
       let data = inp.data;
 
