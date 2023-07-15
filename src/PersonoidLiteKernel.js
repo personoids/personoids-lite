@@ -697,7 +697,7 @@ export const PersonoidLiteKernel = {
         const webPages = response.data.organic_results.map((result) => {
           return {
             title: result.title,
-            link: link,
+            link: result.link,
             snippet: result.snippet,
           }
         });
