@@ -182,7 +182,7 @@ class AIPluginTool extends Tool {
       return 'No operationId found in the response';
     }
     if (operationId == 'No API path found to answer the question') {
-      return 'No API path found to answer the question';
+      return 'No API path found to answer the question. your request is too specific. look for a more generic tool to accomplish the task.';
     }
 
     let openApiData = printOperationDetails(operationId, this.openaiSpec);
@@ -206,7 +206,9 @@ class AIPluginTool extends Tool {
     const shortApiSpec = extractShortVersion(apiUrlJson);
     return new AIPluginTool({
       name: aiPluginJson.name_for_model.toLowerCase(),
-      description: `A \`tool\` to learn the API documentation for ${aiPluginJson.name_for_model.toLowerCase()}, after which you can use 'http_request' to make the actual API call (never use the 'http_request' tool for anything other than interacting with the ${aiPluginJson.name_for_model.toLowerCase()}). Short description of how to use the API's results: ${aiPluginJson.description_for_model})`,
+      description: `A \`tool\` to learn the API documentation for ${aiPluginJson.name_for_model.toLowerCase()}, after which you can use 'http_request' to make the actual API call. 
+Short description of how to use the API's results: 
+${aiPluginJson.description_for_model})`,
       apiSpec: `
 As an AI, your task is to identify the operationId of the relevant API path based on the condensed OpenAPI specifications provided.
 
@@ -219,7 +221,7 @@ Please note:
 Your output should only include:
 - operationId: The operationId of the relevant API path
 
-If you cannot find a suitable API path based on the OpenAPI specifications, please answer only "operationId: No API path found to answer the question".
+If you cannot find a suitable API path based on the OpenAPI specifications, please answer only "operationId: No API path found to answer the question - your request is too specific. look for a more generic tool to accomplish the task.".
 
 Now, based on the question above and the condensed OpenAPI specifications given below, identify the operationId:
 
