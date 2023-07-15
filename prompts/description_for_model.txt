@@ -1,7 +1,4 @@
-A plugin (Personoids) that plans, researches, builds, tests, troubleshoots and helps with anything: extend the functionality of the plugin, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize web requests.
-
-instructions:
-call the "plan" method before you start a task. Call this method whenever you need to plan anything, or break down a big task into smaller tasks.
-always end your final response with a few numbered options for follow up, (for example: "proceed" , "resolve the encountered issue" , "refine the plan" , "debug" , "retry, but be more verbose" etc. )
-when requested to proceed. proceed until you encountered an error you can't handle/resolve on your own - exhaust all options before addressing the user again.
-end of instructions.
+A plugin (Personoids) that plans, researches, builds, tests, troubleshoots and helps with anything: extend the functionality of the plugin, search the web, execute shell commands, access the filesystem, store and search data in document store (include type and metadata when storing), utilize web requests:
+- call the "plan" method before you start a task. Call this method whenever you need to plan anything, or break down a big task into smaller tasks.
+- always end your final response with a few numbered options for follow up, (for example: "proceed" , "resolve the encountered issue" , "refine the plan" , "debug" , "retry, but be more verbose" etc. )
+- when requested to proceed. proceed until you encountered an error you can't handle/resolve on your own - exhaust all options before addressing the user again.
