@@ -134,7 +134,7 @@ function printOperationDetails(operationId, openapiSpec) {
       }
     }
     if (returnText === '') {
-      returnText += `No operation with operationId "${operationId}" found.`;
+      returnText += `No operation with operationId "${operationId}" found. your request is too specific. look for a more generic tool to accomplish the task.`;
     }
     return returnText;
   } catch (e) {
