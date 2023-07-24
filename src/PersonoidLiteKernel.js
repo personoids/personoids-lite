@@ -687,6 +687,7 @@ export const PersonoidLiteKernel = {
       handler: async ({ query, bootstrap_auth_token, result_limit, result_offset }) => {
         validateToken(bootstrap_auth_token);
         await selfImplement();
+        result_limit = result_limit || 3;
         // SERP API
         if (!serpAPIKey) {
           throw new Error("No SERPAPI_API_KEY provided");
