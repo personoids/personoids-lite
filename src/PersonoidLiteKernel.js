@@ -103,14 +103,104 @@ export const PersonoidLiteKernel = {
         }
       }
     },
+    "understandTask": {
+      tags: ['Understanding', "Personoid", "Skill"],
+      method: "GET",
+      description: "Call this method whenever you need to understand a request. understands a task request and converts it into a well formed task description. use this to convert a request into a task description before planning it",
+      request: {
+        "bootstrap_auth_token": {
+          type: "string",
+          name: "bootstrap_auth_token",
+          // description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
+
+        },
+      },
+      response: {
+      },
+      handler: async (request) => {
+        validateToken(request.bootstrap_auth_token);
+        let task_description = `To understand this task:\n`;
+        task_description += `- Research, search and learn the related references and links.\n`;
+        task_description += `- Ask questions to clarify the request, missing context and information.\n`;
+        task_description += `- Create a well defined task definition. including implicit context, scope, verification criteria, etc.\n`;
+        task_description += `- Asses how many different disciplines/skills are involved.\n`;
+        task_description += `- Asses the number of steps required to complete the task.\n`;
+        task_description += `- Store the details in your memory too.\n`;
+        task_description += `- Use your associative memory to find related information and similar tasks you have done in the past successfully.\n`;
+        task_description += `- Use standardizeTask next before you can call plan.\n`;
+        return {
+          understandingInstructions: task_description,
+        }
+      }
+    },
+    "standardizeTask":{
+      tags: ['Understanding', "Personoid", "Skill"],
+      description:"standardize a task. use this if you want to make sure the task is well defined and standardized. you must call this before planning a task.",
+      method: "GET",
+      request: {
+        "bootstrap_auth_token": {
+          type: "string",
+          name: "bootstrap_auth_token",
+          // description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
+        },
+        "task": {
+          type: "string",
+          name: "task",
+          description: "The task to standardize.",
+          required: true,
+        },
+        "parentTask": {
+          type: "string",
+          name: "parentTask",
+          description: "The parent task of the task to standardize.",          
+        },
+        "context": {
+          type: "string",
+          name: "context",
+          description: "The context of the task to standardize.",
+        },
+        "verificationCriteria": {
+          type: "string",
+          name: "verificationCriteria",
+          description: "The verification criteria of the task to standardize.",
+        },
+      },
+      response: {
+      },
+      handler: async ({task, parentTask, context, verificationCriteria}) => {
+        const prompt = `convert the definition to well defined (nothing is implicit, relies or refer to external sources or links). without actually trying to solve the task, without planning it, and without breaking it down to smaller tasks: convert and prepare the context and well-defined textual instructions (prompts) to accomplish the following ambiguous, implicit or non-well-defined task:
+        the context is: ${context}
+        the verification criteria is: ${verificationCriteria}
+        the task is part of a bigger task: ${parentTask}
+        the task is: ${task}`
+        return {
+          standardizeTaskInstructions: prompt,
+        }
+  
+      }
+    },
     "plan": {
       method: "GET",
-      description: "Call this method whenever you need to plan anything, or break down a big task into smaller tasks.",
+      description: "Call this method whenever you need to plan or replan (in case of unexpected failures) anything, or break down a big task into smaller tasks.",
       request: {
         "bootstrap_auth_token": {
           type: "string",
           name: "bootstrap_auth_token",
           description: "The bootstrap auth token. call bootstrapPlugin to get one.",
+          required: true,
+        },
+        "task": {
+          type: "string",
+          name: "task",
+          description: "The task to plan",
+          required: true,
+        },
+        "complexity_estimation": {
+          type: "string",
+          name: "complexity_estimation",
+          description: "The estimated complexity of the task in terms of time, effort, and resources. a number between 0 and 1000",
           required: true,
         },
       },
@@ -610,52 +700,52 @@ export const PersonoidLiteKernel = {
         };
       }
     },
-    "npm": {
-      tags: ['Package', "NPM", "install", "package"],
-      description: 'Installs an npm package, or lists all installed packages if no package name is provided',
-      request: {
-        name: {
-          type: 'string',
-        },
-        bootstrap_auth_token: {
-          type: 'string',
-          description: 'The bootstrap auth token',
-          required: true,
-        }
-      },
-      response: {},
-      handler: async ({ name, bootstrap_auth_token }) => {
-        validateToken(bootstrap_auth_token);
-        if (!name) {
-          // list all installed packages
-          // npm list --depth=0
+    // "npm": {
+    //   tags: ['Package', "NPM", "install", "package"],
+    //   description: 'Installs an npm package, or lists all installed packages if no package name is provided',
+    //   request: {
+    //     name: {
+    //       type: 'string',
+    //     },
+    //     bootstrap_auth_token: {
+    //       type: 'string',
+    //       description: 'The bootstrap auth token',
+    //       required: true,
+    //     }
+    //   },
+    //   response: {},
+    //   handler: async ({ name, bootstrap_auth_token }) => {
+    //     validateToken(bootstrap_auth_token);
+    //     if (!name) {
+    //       // list all installed packages
+    //       // npm list --depth=0
 
-          const stdout = execSync('npm list --depth=0 -p').toString();
-          // parse stdout
-          return { packages: stdout.split("\n").filter((line) => line !== "") };
-        }
-        else {
-          // install package
-          // npm install <package>
-          const stdoutGlobal = execSync('npm install -g ' + name, {
-            cwd: process.cwd(),
-            env: process.env,
-          }).toString();
-          const stdoutLocal = execSync('npm install ' + name, {
-            cwd: process.cwd(),
-            env: process.env,
-          }).toString();
-          return {
-            stdoutGlobal, stdoutLocal,
-            nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
-            proxyFrom: {
-              name: "Dependencies Personoid",
-              avatar_image_url: "http://localhost:5004/avatar/8.png",
-            }
-          };
-        }
-      }
-    },
+    //       const stdout = execSync('npm list --depth=0 -p').toString();
+    //       // parse stdout
+    //       return { packages: stdout.split("\n").filter((line) => line !== "") };
+    //     }
+    //     else {
+    //       // install package
+    //       // npm install <package>
+    //       const stdoutGlobal = execSync('npm install -g ' + name, {
+    //         cwd: process.cwd(),
+    //         env: process.env,
+    //       }).toString();
+    //       const stdoutLocal = execSync('npm install ' + name, {
+    //         cwd: process.cwd(),
+    //         env: process.env,
+    //       }).toString();
+    //       return {
+    //         stdoutGlobal, stdoutLocal,
+    //         nextInstructions: "summarize and present the intermediate result in markdown format with the proxyFrom template.",
+    //         proxyFrom: {
+    //           name: "Dependencies Personoid",
+    //           avatar_image_url: "http://localhost:5004/avatar/8.png",
+    //         }
+    //       };
+    //     }
+    //   }
+    // },
     "webSearch": {
       tags: ['Web'],
       description: 'useful for searching the web',
@@ -688,6 +778,7 @@ export const PersonoidLiteKernel = {
         validateToken(bootstrap_auth_token);
         await selfImplement();
         result_limit = result_limit || 3;
+        result_offset = result_offset || 0;
         // SERP API
         if (!serpAPIKey) {
           throw new Error("No SERPAPI_API_KEY provided");

@@ -1,5 +1,5 @@
 create a method called howtoFixAGitHubIssue that only returns an 'instructions' field that guides how to fix an issue given a github issue URL.
 
 include handling of multiple types of issues: feature request, questions, troubleshooting, bugs, etc.
-
+the instructions should contain: using git logs to search for similar issues.
 plan and research first

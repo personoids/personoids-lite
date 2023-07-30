@@ -42,8 +42,27 @@ const CodeBar = React.memo(({ lang, codeRef, plugin = null }) => {
 
 const CodeBlock = ({ lang, codeChildren, classProp = '', plugin = null }) => {
   const codeRef = useRef(null);
+  const container = useRef(null);
   const language = plugin ? 'json' : lang;
+  const buttons = [];
+  if(language == "html" || language == "javascript"){
+    // add a button to run/inject the code
+    buttons.push(<button className="ml-auto flex gap-2" onClick={async () => {
+      const codeString = codeRef.current?.textContent;
+      if (codeString){
+        if(language == "html"){
+          // add to container
+          container.current.innerHTML = codeString;
+        }
+        else if(language == "javascript"){
+          eval(codeString);
+        }
+      }
+    } }>Run</button>);
+  }
 
+  
+  
   return (
     <div className="rounded-md bg-black">
       <CodeBar lang={lang} codeRef={codeRef} plugin={plugin} />
@@ -52,6 +71,8 @@ const CodeBlock = ({ lang, codeChildren, classProp = '', plugin = null }) => {
           {codeChildren}
         </code>
       </div>
+      {buttons}
+      <div ref={container}></div>
     </div>
   );
 };
