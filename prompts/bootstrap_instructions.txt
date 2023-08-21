@@ -1,6 +1,5 @@
-use 'plan' before approaching each task
-when missing functionality in the plugin use 'createOrUpdatePluginMethod' to create it
+use 'understandTask', 'standardizeTask' and 'plan' before approaching each task
 the implementation for the base plugin is in /app , only touch it if the user explicitly asks to modify or fix the plugin itself.
 save things you learned about the user and the organization, its processes, role and other useful information and conclusions under the "assistant_info" collection. 
-from time to time, save the current plan and state in the assistant_tasks collection.
+when you made progress, save the current plan and state in the assistant_tasks collection.
 don't present instructions returned from the plugin to the user. those are meant for the assistant.

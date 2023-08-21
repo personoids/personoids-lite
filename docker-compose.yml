@@ -78,7 +78,7 @@ services:
     depends_on:
       - mongodb
       - plugin
-    image: librechat                # Comment this & uncomment below to build from docker hub image
+    # image: librechat                # Comment this & uncomment below to build from docker hub image
     build:                                   # ^------
       context: ./LibreChat/                              # ^------
       target: node                             # ^------v
