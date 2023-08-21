@@ -6,5 +6,7 @@ workspace
 env.sh
 env.bat
 .env
+# Ignore .env in subfolders such as LibraChat
+**.env
 root
 logs/**
