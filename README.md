@@ -1,13 +1,13 @@
 [![Discord](https://img.shields.io/discord/1093265243947409408?label=Discord&logo=discord&logoColor=white)](https://bit.ly/FutureWorkCafe)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/made-with.svg)](https://github.com/personoids/chat-ai-plugin)
+[![MadeWithPersonoids](https://raw.githubusercontent.com/personoids/personoids-lite/main/made-with.svg)](https://github.com/personoids/personoids-lite)
 
 ⭐ Star us on GitHub — it motivates us a lot! ⭐
 
 [Install Now](#installation)
 
 
-<img src="https://raw.githubusercontent.com/personoids/chat-ai-plugin/main/images/Personoids%20hero.png" width=288 height=288 style='border-radius:50px'>
+<img src="https://raw.githubusercontent.com/personoids/personoids-lite/main/images/Personoids%20hero.png" width=288 height=288 style='border-radius:50px'>
 
 
 # Personoids Lite for AI Chat 
@@ -48,8 +48,8 @@ Welcome to the era of Promptware, a revolutionary software paradigm brought to l
 - Clone this repo:
 
 ```bash
-git clone https://github.com/personoids/chat-ai-plugin.git
-cd chat-ai-plugin
+git clone https://github.com/personoids/personoids-lite.git
+cd personoids-lite
 ```
 
 ## Running Personoids 
